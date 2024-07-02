@@ -39,11 +39,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public boolean isTokenValid(String token) {
         Date expiration = extractClaims(token, Claims::getExpiration);
-        return !isExpired(expiration);
-    }
-
-    private boolean isExpired(Date expiration) {
-        return expiration.before(new Date());
+        return !expiration.before(new Date());
     }
 
     @Override
@@ -70,5 +66,10 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String extractUsername(String token) {
         return this.extractClaims(token, Claims::getSubject);
+    }
+
+    @Override
+    public Date getExpired(String token) {
+        return extractClaims(token,Claims::getExpiration);
     }
 }

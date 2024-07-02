@@ -4,7 +4,7 @@ import com.ron.FoodDelivery.auth.dto.RequestLoginDto;
 import com.ron.FoodDelivery.auth.dto.RequestRegisterDto;
 import com.ron.FoodDelivery.auth.dto.RequestVerifyOTPDto;
 import com.ron.FoodDelivery.auth.dto.ResponseLoginDto;
-import com.ron.FoodDelivery.entities.otp.OtpEntity;
+import com.ron.FoodDelivery.entities.token.UserAgent;
 import com.ron.FoodDelivery.entities.user.UserEntity;
 import com.ron.FoodDelivery.entities.user.UserRole;
 import com.ron.FoodDelivery.exceptions.EntityNotFoundException;
@@ -13,6 +13,7 @@ import com.ron.FoodDelivery.jwt.JwtService;
 import com.ron.FoodDelivery.mail.MailService;
 import com.ron.FoodDelivery.repositories.UserRepository;
 import com.ron.FoodDelivery.services.OtpService;
+import com.ron.FoodDelivery.services.TokenService;
 import com.ron.FoodDelivery.utils.Constant;
 import com.ron.FoodDelivery.utils.RegexValid;
 import com.ron.FoodDelivery.utils.ResponseLayout;
@@ -26,7 +27,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -48,6 +48,8 @@ public class AuthServiceImpl implements AuthService {
     private EntityManager entityManager;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private TokenService tokenService;
     private final ExecutorService executorService = Executors.newFixedThreadPool(5);
 
     private UserEntity findUserByCase(String input) {
@@ -61,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseLayout login(RequestLoginDto requestLoginDto) {
+    public ResponseLayout login(RequestLoginDto requestLoginDto, UserAgent userAgent) {
         UserEntity user = findUserByCase(requestLoginDto.username());
         if (user == null) {
             throw new EntityNotFoundException("User not found!", HttpStatus.NOT_FOUND);
@@ -75,6 +77,7 @@ public class AuthServiceImpl implements AuthService {
         if (!user.getEnabled_two_factor_auth()) {
             String access_token = jwtService.generate(user);
             ResponseLoginDto responseLoginDto = new ResponseLoginDto(user, false, access_token);
+            tokenService.saveToken(user, access_token, userAgent);
             return new ResponseLayout(responseLoginDto, "Login successfully!", HttpStatus.OK);
         }
         //enable two-factor authentication
@@ -133,7 +136,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseLayout verify_otp(RequestVerifyOTPDto requestVerifyOTPDto) {
+    public ResponseLayout verify_otp(RequestVerifyOTPDto requestVerifyOTPDto, UserAgent userAgent) {
         if (!this.jwtService.isTokenValid(requestVerifyOTPDto.token()))
             throw new ServiceException("Token is expired! Please login with password again!", HttpStatus.FORBIDDEN);
         String email = jwtService.extractUsername(requestVerifyOTPDto.token());
@@ -142,6 +145,7 @@ public class AuthServiceImpl implements AuthService {
         if (resOtp.httpStatus() == HttpStatus.OK) {
             String access_token = jwtService.generate(user);
             ResponseLoginDto responseLoginDto = new ResponseLoginDto(user, user.getEnabled_two_factor_auth(), access_token);
+            tokenService.saveToken(user, access_token, userAgent);
             return new ResponseLayout(responseLoginDto, "Login successfully!", HttpStatus.OK);
         }
         return resOtp;

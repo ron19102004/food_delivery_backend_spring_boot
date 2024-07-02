@@ -3,6 +3,7 @@ package com.ron.FoodDelivery.jwt;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -18,4 +19,5 @@ public interface JwtService {
     <T> T extractClaims(String token, Function<Claims, T> claimResolver);
 
     String extractUsername(String token);
+    Date getExpired(String token);
 }

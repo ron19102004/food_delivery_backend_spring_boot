@@ -1,5 +1,9 @@
 package com.ron.FoodDelivery.jwt;
 
+import com.ron.FoodDelivery.entities.token.TokenEntity;
+import com.ron.FoodDelivery.entities.token.UserAgent;
+import com.ron.FoodDelivery.exceptions.ServiceException;
+import com.ron.FoodDelivery.services.TokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +29,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private JwtService jwtService;
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request,
@@ -36,7 +43,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         final String token = header.substring(7);
         try {
+            TokenEntity tokenEntity = tokenService.findByToken(token);
+            if (tokenEntity == null) {
+                throw new ServiceException("Token is not exist!", HttpStatus.FORBIDDEN);
+            }
             if (!this.jwtService.isTokenValid(token)) {
+                tokenService.deleteByToken(token);
                 filterChain.doFilter(request, response);
                 return;
             }

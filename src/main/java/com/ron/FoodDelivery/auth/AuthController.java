@@ -3,9 +3,11 @@ package com.ron.FoodDelivery.auth;
 import com.ron.FoodDelivery.auth.dto.RequestLoginDto;
 import com.ron.FoodDelivery.auth.dto.RequestRegisterDto;
 import com.ron.FoodDelivery.auth.dto.RequestVerifyOTPDto;
+import com.ron.FoodDelivery.entities.token.UserAgent;
 import com.ron.FoodDelivery.utils.PreAuthUtil;
 import com.ron.FoodDelivery.utils.ResponseLayout;
 import com.ron.FoodDelivery.utils.SecurityUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,8 +24,13 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseLayout> login(@RequestBody RequestLoginDto requestLoginDto) {
-        return ResponseEntity.ok(authService.login(requestLoginDto));
+    public ResponseEntity<ResponseLayout> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletRequest request) {
+        String userAgentRequest = request.getHeader("User-Agent");
+        UserAgent user_agent = UserAgent.MOBILE;
+        if (!userAgentRequest.equals("mobile")) {
+            user_agent = UserAgent.WEB;
+        }
+        return ResponseEntity.ok(authService.login(requestLoginDto, user_agent));
     }
 
     @PostMapping("/register")
@@ -32,8 +39,13 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<ResponseLayout> verifyOtp(@RequestBody RequestVerifyOTPDto requestVerifyOTPDto) {
-        return ResponseEntity.ok(authService.verify_otp(requestVerifyOTPDto));
+    public ResponseEntity<ResponseLayout> verifyOtp(@RequestBody RequestVerifyOTPDto requestVerifyOTPDto, HttpServletRequest request) {
+        String userAgentRequest = request.getHeader("User-Agent");
+        UserAgent user_agent = UserAgent.MOBILE;
+        if (!userAgentRequest.equals("mobile")) {
+            user_agent = UserAgent.WEB;
+        }
+        return ResponseEntity.ok(authService.verify_otp(requestVerifyOTPDto,user_agent));
     }
 
     @PostMapping("/change-tfa")

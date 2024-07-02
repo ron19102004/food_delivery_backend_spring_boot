@@ -37,3 +37,15 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
+cloud:
+  endpointUrl: https://s3.ap-southeast-2.amazonaws.com
+  aws:
+    credentials:
+      access-key: AKIAQ3EGWTN6CXOVNZMO
+      secret-key: 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
+    region:
+      static: ap-southeast-2
+    stack:
+      auto: false
+    bucket:
+      name: food-delivery-ron-app
