@@ -3,19 +3,19 @@ package com.ron.FoodDelivery.auth;
 import com.ron.FoodDelivery.auth.dto.RequestLoginDto;
 import com.ron.FoodDelivery.auth.dto.RequestRegisterDto;
 import com.ron.FoodDelivery.auth.dto.RequestVerifyOTPDto;
+import com.ron.FoodDelivery.auth.dto.ResponseLoginDto;
 import com.ron.FoodDelivery.entities.token.UserAgent;
+import com.ron.FoodDelivery.entities.user.UserEntity;
 import com.ron.FoodDelivery.utils.PreAuthUtil;
 import com.ron.FoodDelivery.utils.ResponseLayout;
 import com.ron.FoodDelivery.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -24,7 +24,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseLayout> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletRequest request) {
+    public ResponseEntity<ResponseLayout<ResponseLoginDto>> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletRequest request) {
         String userAgentRequest = request.getHeader("User-Agent");
         UserAgent user_agent = UserAgent.MOBILE;
         if (!userAgentRequest.equals("mobile")) {
@@ -34,24 +34,35 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseLayout> register(@RequestBody RequestRegisterDto requestRegisterDto) {
+    public ResponseEntity<ResponseLayout<UserEntity>> register(@RequestBody RequestRegisterDto requestRegisterDto) {
         return ResponseEntity.ok(authService.register(requestRegisterDto));
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<ResponseLayout> verifyOtp(@RequestBody RequestVerifyOTPDto requestVerifyOTPDto, HttpServletRequest request) {
+    public ResponseEntity<ResponseLayout<ResponseLoginDto>> verifyOtp(@RequestBody RequestVerifyOTPDto requestVerifyOTPDto, HttpServletRequest request) {
         String userAgentRequest = request.getHeader("User-Agent");
         UserAgent user_agent = UserAgent.MOBILE;
         if (!userAgentRequest.equals("mobile")) {
             user_agent = UserAgent.WEB;
         }
-        return ResponseEntity.ok(authService.verify_otp(requestVerifyOTPDto,user_agent));
+        return ResponseEntity.ok(authService.verify_otp(requestVerifyOTPDto, user_agent));
     }
 
     @PostMapping("/change-tfa")
     @PreAuthorize(PreAuthUtil.hasAll)
-    public ResponseEntity<ResponseLayout> changeTfa() {
+    public ResponseEntity<ResponseLayout<Boolean>> changeTfa() {
         Authentication authentication = SecurityUtil.authentication();
         return ResponseEntity.ok(authService.change_tfa(authentication.getName()));
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize(PreAuthUtil.hasAll)
+    public ResponseEntity<ResponseLayout<UserEntity>> getMyInfoFromToken() {
+        Authentication authentication = SecurityUtil.authentication();
+        ResponseLayout<UserEntity> responseLayout = new ResponseLayout<>(
+                authService.findUserByUsername(authentication.getName()),
+                "Got!",
+                false);
+        return ResponseEntity.ok(responseLayout);
     }
 }

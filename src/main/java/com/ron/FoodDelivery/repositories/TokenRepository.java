@@ -15,7 +15,4 @@ public interface TokenRepository extends JpaRepository<TokenEntity, Long> {
 
     @Query("SELECT t FROM TokenEntity t WHERE t.access_token = :access_token")
     TokenEntity findByAccessToken(@Param("access_token") String access_token);
-
-    @Query("DELETE FROM TokenEntity t WHERE t.access_token = :access_token")
-    void removeByAccessToken(@Param("access_token") String access_token);
 }

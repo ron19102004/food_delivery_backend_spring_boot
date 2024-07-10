@@ -1,5 +1,6 @@
 package com.ron.FoodDelivery.services.impls;
 
+import com.ron.FoodDelivery.auth.dto.ResponseLoginDto;
 import com.ron.FoodDelivery.entities.otp.OtpEntity;
 import com.ron.FoodDelivery.entities.user.UserEntity;
 import com.ron.FoodDelivery.exceptions.EntityNotFoundException;
@@ -53,16 +54,16 @@ public class OtpServiceImpl implements OtpService {
     }
 
     @Override
-    public ResponseLayout is_valid(Long user_id, String otp) {
+    public ResponseLayout<ResponseLoginDto> is_valid(Long user_id, String otp) {
         OtpEntity otpEntity = otpRepository.findById(user_id).orElse(null);
-        if (otpEntity == null) throw new EntityNotFoundException("OTP not found", HttpStatus.NOT_FOUND);
+        if (otpEntity == null) throw new EntityNotFoundException("OTP not found");
         if (is_expired(otpEntity.getExpired_at())) {
-            return new ResponseLayout(null, "OTP is expired!", HttpStatus.BAD_REQUEST);
+            return new ResponseLayout<>(null, "OTP is expired!",false);
         }
         if (!otpEntity.getCode().equals(otp)) {
-            return new ResponseLayout(null, "OTP incorrect!", HttpStatus.BAD_REQUEST);
+            return new ResponseLayout<>(null, "OTP incorrect!", false);
         }
-        return new ResponseLayout(null, "OTP is verified!", HttpStatus.OK);
+        return new ResponseLayout<>(null, "OTP is verified!",true);
     }
 
     private boolean is_expired(Date expired) {

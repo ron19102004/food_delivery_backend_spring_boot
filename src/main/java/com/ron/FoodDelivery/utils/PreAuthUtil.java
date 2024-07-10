@@ -6,4 +6,5 @@ public class PreAuthUtil {
     public static final String hasUSER = "hasAuthority('USER')";
     public static final String hasSELLER = "hasAuthority('SELLER')";
     public static final String hasDELIVER = "hasAuthority('DELIVER')";
+    public static final String hasDELIVER_SELLER = "hasAnyAuthority('DELIVER','SELLER')";
 }

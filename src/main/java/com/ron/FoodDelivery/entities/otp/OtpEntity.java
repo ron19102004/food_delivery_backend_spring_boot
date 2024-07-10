@@ -23,6 +23,6 @@ public class OtpEntity {
     //relationships
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "id",referencedColumnName = "id", nullable = false)
     private UserEntity user;
 }

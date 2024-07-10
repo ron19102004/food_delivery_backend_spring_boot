@@ -39,7 +39,6 @@ public class SellerEntity {
     @Temporal(TemporalType.TIME)
     private Date close_at;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
     private Date issued_at;
     @ColumnDefault("false")
     private Boolean enabled;

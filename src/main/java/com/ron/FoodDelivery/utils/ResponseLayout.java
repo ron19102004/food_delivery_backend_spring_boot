@@ -1,11 +1,10 @@
 package com.ron.FoodDelivery.utils;
 
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 
-public record ResponseLayout(
-        Object data,
+public record ResponseLayout<T>(
+        T data,
         String message,
-        HttpStatus httpStatus
+        Boolean status
 ) {
 }

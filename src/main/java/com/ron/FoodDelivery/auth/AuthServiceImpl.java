@@ -14,6 +14,7 @@ import com.ron.FoodDelivery.mail.MailService;
 import com.ron.FoodDelivery.repositories.UserRepository;
 import com.ron.FoodDelivery.services.OtpService;
 import com.ron.FoodDelivery.services.TokenService;
+import com.ron.FoodDelivery.services.UserService;
 import com.ron.FoodDelivery.utils.Constant;
 import com.ron.FoodDelivery.utils.RegexValid;
 import com.ron.FoodDelivery.utils.ResponseLayout;
@@ -34,6 +35,8 @@ import java.util.concurrent.Executors;
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
     @Autowired
     private RegexValid regexValid;
     @Autowired
@@ -63,22 +66,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseLayout login(RequestLoginDto requestLoginDto, UserAgent userAgent) {
+    public ResponseLayout<ResponseLoginDto> login(RequestLoginDto requestLoginDto, UserAgent userAgent) {
         UserEntity user = findUserByCase(requestLoginDto.username());
         if (user == null) {
-            throw new EntityNotFoundException("User not found!", HttpStatus.NOT_FOUND);
+            throw new EntityNotFoundException("User not found!");
         }
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), requestLoginDto.password()));
         if (!authentication.isAuthenticated()) {
-            return new ResponseLayout(null, "Password is incorrect!", HttpStatus.BAD_REQUEST);
+            return new ResponseLayout<>(null, "Password is incorrect!", false);
         }
         //disable two-factor authentication
         if (!user.getEnabled_two_factor_auth()) {
             String access_token = jwtService.generate(user);
             ResponseLoginDto responseLoginDto = new ResponseLoginDto(user, false, access_token);
             tokenService.saveToken(user, access_token, userAgent);
-            return new ResponseLayout(responseLoginDto, "Login successfully!", HttpStatus.OK);
+            return new ResponseLayout<>(responseLoginDto, "Login successfully!", true);
         }
         //enable two-factor authentication
         /*
@@ -98,67 +101,61 @@ public class AuthServiceImpl implements AuthService {
             mailService.send_otp(user, otp);
         });
         ResponseLoginDto responseLoginDto = new ResponseLoginDto(userRes, true, access_token);
-        return new ResponseLayout(responseLoginDto, "Check OTP!", HttpStatus.OK);
+        return new ResponseLayout<>(responseLoginDto, "Check OTP!", true);
     }
 
     @Override
-    public ResponseLayout register(RequestRegisterDto requestRegisterDto) {
+    public ResponseLayout<UserEntity> register(RequestRegisterDto requestRegisterDto) {
         //check email
         if (!regexValid.isEmail(requestRegisterDto.email())) {
-            return new ResponseLayout(null, "Email is invalid!", HttpStatus.BAD_REQUEST);
+            return new ResponseLayout<>(null, "Email is invalid!", false);
         } else {
             UserEntity user = findUserByCase(requestRegisterDto.email());
-            if (user != null) return new ResponseLayout(null, "Email is exist!", HttpStatus.BAD_REQUEST);
+            if (user != null) return new ResponseLayout<>(null, "Email is exist!", false);
         }
         //check phone
         if (!regexValid.isTel(requestRegisterDto.phone_number())) {
-            return new ResponseLayout(null, "Phone number is invalid!", HttpStatus.BAD_REQUEST);
+            return new ResponseLayout<>(null, "Phone number is invalid!", false);
         } else {
             UserEntity user = findUserByCase(requestRegisterDto.phone_number());
-            if (user != null) return new ResponseLayout(null, "Phone number is exist!", HttpStatus.BAD_REQUEST);
+            if (user != null) return new ResponseLayout<>(null, "Phone number is exist!", false);
         }
         //check username
         UserEntity user = findUserByCase(requestRegisterDto.username());
-        if (user != null) return new ResponseLayout(null, "Username is exist!", HttpStatus.BAD_REQUEST);
-        user = userRepository.save(UserEntity.builder()
-                .first_name(requestRegisterDto.first_name())
-                .phone_number(requestRegisterDto.phone_number())
-                .last_name(requestRegisterDto.last_name())
-                .password(passwordEncoder.encode(requestRegisterDto.password()))
-                .username(requestRegisterDto.username())
-                .enabled_two_factor_auth(false)
-                .email(requestRegisterDto.email())
-                .role(UserRole.USER)
-                .is_locked(false)
-                .avatar(Constant.AVATAR_DEFAULT_URL)
-                .build());
-        return new ResponseLayout(user, "Register successfully!", HttpStatus.OK);
+        if (user != null) return new ResponseLayout<>(null, "Username is exist!", false);
+        user = userService.save(UserRole.USER, requestRegisterDto);
+        return new ResponseLayout<>(user, "Register successfully!", true);
     }
 
     @Override
-    public ResponseLayout verify_otp(RequestVerifyOTPDto requestVerifyOTPDto, UserAgent userAgent) {
+    public ResponseLayout<ResponseLoginDto> verify_otp(RequestVerifyOTPDto requestVerifyOTPDto, UserAgent userAgent) {
         if (!this.jwtService.isTokenValid(requestVerifyOTPDto.token()))
             throw new ServiceException("Token is expired! Please login with password again!", HttpStatus.FORBIDDEN);
         String email = jwtService.extractUsername(requestVerifyOTPDto.token());
         UserEntity user = userRepository.findByEmailAndIsLocked(email, false);
-        ResponseLayout resOtp = otpService.is_valid(user.getId(), requestVerifyOTPDto.code());
-        if (resOtp.httpStatus() == HttpStatus.OK) {
+        ResponseLayout<ResponseLoginDto> resOtp = otpService.is_valid(user.getId(), requestVerifyOTPDto.code());
+        if (resOtp.status()) {
             String access_token = jwtService.generate(user);
             ResponseLoginDto responseLoginDto = new ResponseLoginDto(user, user.getEnabled_two_factor_auth(), access_token);
             tokenService.saveToken(user, access_token, userAgent);
-            return new ResponseLayout(responseLoginDto, "Login successfully!", HttpStatus.OK);
+            return new ResponseLayout<>(responseLoginDto, "Login successfully!", true);
         }
         return resOtp;
     }
 
     @Transactional
     @Override
-    public ResponseLayout change_tfa(String username) {
+    public ResponseLayout<Boolean> change_tfa(String username) {
         UserEntity user = userRepository.findByUsernameAndIsLocked(username, false)
                 .orElseThrow(() -> new ServiceException("Token error!", HttpStatus.FORBIDDEN));
         user.setEnabled_two_factor_auth(!user.getEnabled_two_factor_auth());
         entityManager.merge(user);
-        return new ResponseLayout(user.getEnabled_two_factor_auth(), "Change two-factor authentication successfully!", HttpStatus.OK);
+        return new ResponseLayout<>(user.getEnabled_two_factor_auth(), "Change two-factor authentication successfully!", true);
+    }
+
+    @Override
+    public UserEntity findUserByUsername(String username) {
+        return userRepository.findByUsernameAndIsLocked(username, false).orElse(null);
     }
 }
 

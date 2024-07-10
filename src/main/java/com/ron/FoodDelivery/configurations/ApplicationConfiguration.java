@@ -16,13 +16,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class ApplicationConfiguration {
+    public final static String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    public final static String TEL_REGEX = "^(\\+[0-9]{1,3})?[0-9]{10,}$";
     @Autowired
     private UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository
-                .findByUsernameAndIsLocked(username,false)
+                .findByUsernameAndIsLocked(username, false)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
 
@@ -43,17 +45,18 @@ public class ApplicationConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    public RegexValid regexValid(){
+    public RegexValid regexValid() {
         return new RegexValid() {
             @Override
             public boolean isEmail(String email) {
-                return this.emailPattern.matcher(email).matches();
+                return check(EMAIL_REGEX, email);
             }
 
             @Override
             public boolean isTel(String tel) {
-                return this.telPattern.matcher(tel).matches();
+                return check(TEL_REGEX, tel);
             }
         };
     }

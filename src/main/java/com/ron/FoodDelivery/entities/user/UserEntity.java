@@ -32,7 +32,7 @@ public class UserEntity extends EntityBase implements UserDetails {
     private String first_name;
     @Column(nullable = false)
     private String last_name;
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String username;
     @Column(nullable = false)
     private String email;
@@ -41,6 +41,7 @@ public class UserEntity extends EntityBase implements UserDetails {
     @Column(nullable = false)
     @JsonIgnore
     private String password;
+    @Column(columnDefinition = "TEXT")
     private String avatar;
     @Column(nullable = false)
     private UserRole role;
