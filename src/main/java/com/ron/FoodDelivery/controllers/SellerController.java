@@ -1,6 +1,6 @@
 package com.ron.FoodDelivery.controllers;
 
-import com.ron.FoodDelivery.entities.seller.dto.RequestCreateSellerDto;
+import com.ron.FoodDelivery.entities.seller.dto.RequestUpdateInformationSellerDto;
 import com.ron.FoodDelivery.utils.PreAuthUtil;
 import com.ron.FoodDelivery.utils.ResponseLayout;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +17,7 @@ public class SellerController {
 
     @PostMapping("/update-information")
     @PreAuthorize(PreAuthUtil.hasSELLER)
-    public ResponseEntity<ResponseLayout<Object>> update_information(@NotNull @RequestBody RequestCreateSellerDto requestCreateSellerDto) {
+    public ResponseEntity<ResponseLayout<Object>> update_information(@NotNull @RequestBody RequestUpdateInformationSellerDto requestUpdateInformationSellerDto) {
         return null;
     }
 }

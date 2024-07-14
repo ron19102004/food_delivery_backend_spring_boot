@@ -1,21 +1,28 @@
 package com.ron.FoodDelivery.services.impls;
 
+import com.ron.FoodDelivery.entities.location.LocationEntity;
 import com.ron.FoodDelivery.entities.request_role_account.dto.RequestCreateRequestRoleAccDataDto;
 import com.ron.FoodDelivery.entities.seller.SellerEntity;
+import com.ron.FoodDelivery.entities.seller.dto.RequestUpdateInformationSellerDto;
 import com.ron.FoodDelivery.entities.user.UserEntity;
 import com.ron.FoodDelivery.exceptions.EntityNotFoundException;
+import com.ron.FoodDelivery.exceptions.ServiceException;
+import com.ron.FoodDelivery.repositories.LocationRepository;
 import com.ron.FoodDelivery.repositories.SellerRepository;
 import com.ron.FoodDelivery.services.SellerService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SellerServiceImpl implements SellerService {
     @Autowired
     private SellerRepository sellerRepository;
+    @Autowired
+    private LocationRepository locationRepository;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -30,12 +37,30 @@ public class SellerServiceImpl implements SellerService {
                 .build();
         sellerRepository.save(sellerEntity);
     }
+    @Transactional
+    @Override
+    public void update_information(String username, RequestUpdateInformationSellerDto requestUpdateInformationSellerDto) {
+        SellerEntity seller = sellerRepository.findByUsername(username);
+        if (seller == null) throw new ServiceException("Seller not found!", HttpStatus.NOT_FOUND);
+        LocationEntity location = locationRepository.findById(requestUpdateInformationSellerDto.location_id()).orElse(null);
+        if (location == null) throw new ServiceException("Location not found!",HttpStatus.NOT_FOUND);
+        seller.setName(requestUpdateInformationSellerDto.name());
+        seller.setAddress(requestUpdateInformationSellerDto.address());
+        seller.setEmail(requestUpdateInformationSellerDto.email());
+        seller.setClose_at(requestUpdateInformationSellerDto.close_at());
+        seller.setOpen_at(requestUpdateInformationSellerDto.open_at());
+        seller.setPhone_number(requestUpdateInformationSellerDto.phone_number());
+        seller.setLatitude(requestUpdateInformationSellerDto.latitude());
+        seller.setLongitude(requestUpdateInformationSellerDto.longitude());
+        seller.setLocation(location);
+        entityManager.merge(seller);
+    }
 
     @Transactional
     @Override
-    public void disable_account(Long id) {
+    public void set_enable_account(Long id,Boolean enable) {
         SellerEntity sellerEntity = sellerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Seller account not found"));
-        sellerEntity.setEnabled(false);
+        sellerEntity.setEnabled(enable);
         entityManager.merge(sellerEntity);
     }
 }

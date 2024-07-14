@@ -8,4 +8,5 @@ public interface UserService {
     UserEntity findByUsername(String username);
 
     UserEntity save(UserRole role, RequestRegisterDto requestRegisterDto);
+    void changeRole(Long userId,UserRole role);
 }

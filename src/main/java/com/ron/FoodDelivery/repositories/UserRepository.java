@@ -18,4 +18,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query("SELECT u FROM UserEntity u WHERE u.email = :email AND u.is_locked = :is_locked")
     UserEntity findByEmailAndIsLocked(@Param("email") String email, @Param("is_locked") Boolean is_locked);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.id = :id AND u.is_locked = :is_locked")
+    UserEntity findByIdAndIsLocked(@Param("id") Long id, @Param("is_locked") Boolean is_locked);
 }

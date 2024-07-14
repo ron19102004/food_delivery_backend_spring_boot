@@ -7,6 +7,9 @@ import com.ron.FoodDelivery.exceptions.EntityNotFoundException;
 import com.ron.FoodDelivery.repositories.UserRepository;
 import com.ron.FoodDelivery.services.UserService;
 import com.ron.FoodDelivery.utils.Constant;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public UserEntity findByUsername(String username) {
@@ -42,5 +47,12 @@ public class UserServiceImpl implements UserService {
                 .is_locked(false)
                 .avatar(Constant.AVATAR_DEFAULT_URL)
                 .build());
+    }
+    @Transactional
+    @Override
+    public void changeRole(Long userId, UserRole role) {
+        UserEntity user = userRepository.findByIdAndIsLocked(userId,false);
+        user.setRole(role);
+        entityManager.merge(user);
     }
 }

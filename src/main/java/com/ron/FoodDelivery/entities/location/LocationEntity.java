@@ -21,6 +21,8 @@ public class LocationEntity extends EntityBase {
     private String name;
     @ColumnDefault("false")
     private Boolean deleted;
+    @Column(nullable = false,unique = true)
+    private Integer code;
     //relationships
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "location",orphanRemoval = true)
