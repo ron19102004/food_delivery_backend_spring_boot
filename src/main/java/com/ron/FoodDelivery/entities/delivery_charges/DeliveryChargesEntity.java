@@ -20,11 +20,8 @@ import java.util.List;
 public class DeliveryChargesEntity extends EntityBase {
     @Column(nullable = false)
     private Double price;
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date issued_at;
-    @Column(nullable = false)
-    private double kilometer;
+    private Double kilometer;
     @ColumnDefault("false")
     private Boolean is_active;
     //relationships

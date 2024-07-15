@@ -1,5 +1,7 @@
 package com.ron.FoodDelivery.services.impls;
 
+import com.ron.FoodDelivery.aws.AwsConfiguration;
+import com.ron.FoodDelivery.aws.AwsS3Service;
 import com.ron.FoodDelivery.entities.location.LocationEntity;
 import com.ron.FoodDelivery.entities.request_role_account.dto.RequestCreateRequestRoleAccDataDto;
 import com.ron.FoodDelivery.entities.seller.SellerEntity;
@@ -16,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class SellerServiceImpl implements SellerService {
@@ -25,6 +28,8 @@ public class SellerServiceImpl implements SellerService {
     private LocationRepository locationRepository;
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private AwsS3Service awsS3Service;
 
     @Override
     public void init_account(UserEntity user, RequestCreateRequestRoleAccDataDto requestCreateRequestRoleAccDataDto) {
@@ -37,13 +42,14 @@ public class SellerServiceImpl implements SellerService {
                 .build();
         sellerRepository.save(sellerEntity);
     }
+
     @Transactional
     @Override
     public void update_information(String username, RequestUpdateInformationSellerDto requestUpdateInformationSellerDto) {
         SellerEntity seller = sellerRepository.findByUsername(username);
         if (seller == null) throw new ServiceException("Seller not found!", HttpStatus.NOT_FOUND);
         LocationEntity location = locationRepository.findById(requestUpdateInformationSellerDto.location_id()).orElse(null);
-        if (location == null) throw new ServiceException("Location not found!",HttpStatus.NOT_FOUND);
+        if (location == null) throw new ServiceException("Location not found!", HttpStatus.NOT_FOUND);
         seller.setName(requestUpdateInformationSellerDto.name());
         seller.setAddress(requestUpdateInformationSellerDto.address());
         seller.setEmail(requestUpdateInformationSellerDto.email());
@@ -58,7 +64,18 @@ public class SellerServiceImpl implements SellerService {
 
     @Transactional
     @Override
-    public void set_enable_account(Long id,Boolean enable) {
+    public String update_avatar(String username, MultipartFile image) {
+        SellerEntity seller = sellerRepository.findByUsername(username);
+        if (seller == null) throw new ServiceException("Seller not found!", HttpStatus.NOT_FOUND);
+        String url = awsS3Service.upload(image, AwsConfiguration.AVATAR_FOLDER);
+        seller.setAvatar(url);
+        entityManager.merge(seller);
+        return url;
+    }
+
+    @Transactional
+    @Override
+    public void set_enable_account(Long id, Boolean enable) {
         SellerEntity sellerEntity = sellerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Seller account not found"));
         sellerEntity.setEnabled(enable);
         entityManager.merge(sellerEntity);

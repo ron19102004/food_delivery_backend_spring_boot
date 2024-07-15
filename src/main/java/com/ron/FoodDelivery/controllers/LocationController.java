@@ -34,7 +34,7 @@ public class LocationController {
     @PutMapping("/{id}")
     @PreAuthorize(PreAuthUtil.hasADMIN)
     public ResponseEntity<ResponseLayout<Object>> updateLocation(
-            @RequestParam("id") Long id,
+            @PathVariable("id") Long id,
             @RequestBody RequestUpdateLocationDto requestCreateLocationDto) {
         locationService.update(id, requestCreateLocationDto);
         return ResponseEntity.ok(new ResponseLayout<>(null, "Updated!", true));
@@ -42,7 +42,7 @@ public class LocationController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize(PreAuthUtil.hasADMIN)
-    public ResponseEntity<ResponseLayout<Object>> remove(@RequestParam("id") Long id) {
+    public ResponseEntity<ResponseLayout<Object>> remove(@PathVariable("id") Long id) {
         locationService.remove(id);
         return ResponseEntity.ok(new ResponseLayout<>(null, "Removed!", true));
     }

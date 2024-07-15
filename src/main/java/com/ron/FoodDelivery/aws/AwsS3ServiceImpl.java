@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ron.FoodDelivery.utils.LogUtil;
 import jakarta.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,8 +50,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
             // Transfer multipart file data to the temporary file
             multipartFile.transferTo(fileConvert);
         } catch (IOException e) {
-            System.err.println("Error converting multipart file: " + e.getMessage());
-            e.printStackTrace();
+            LogUtil.log(AwsS3ServiceImpl.class,e, LogUtil.Status.ERROR);
         }
         return fileConvert;
     }

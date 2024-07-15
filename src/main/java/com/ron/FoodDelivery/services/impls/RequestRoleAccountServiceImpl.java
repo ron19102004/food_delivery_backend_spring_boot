@@ -7,7 +7,7 @@ import com.ron.FoodDelivery.entities.user.UserEntity;
 import com.ron.FoodDelivery.entities.user.UserRole;
 import com.ron.FoodDelivery.exceptions.EntityNotFoundException;
 import com.ron.FoodDelivery.repositories.RequestRoleAccountRepository;
-import com.ron.FoodDelivery.services.DeliveryService;
+import com.ron.FoodDelivery.services.DeliverService;
 import com.ron.FoodDelivery.services.RequestRoleAccountService;
 import com.ron.FoodDelivery.services.SellerService;
 import com.ron.FoodDelivery.services.UserService;
@@ -27,7 +27,7 @@ public class RequestRoleAccountServiceImpl implements RequestRoleAccountService 
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
-    private DeliveryService deliveryService;
+    private DeliverService deliverService;
     @Autowired
     private SellerService sellerService;
     @Autowired
@@ -45,7 +45,7 @@ public class RequestRoleAccountServiceImpl implements RequestRoleAccountService 
                 .build();
         RequestRoleAccount requestRoleAccount = requestRoleAccountRepository.save(_requestRoleAccount);
         switch (requestCreateRequestRoleAccDto.role()) {
-            case DELIVER -> deliveryService.init_account(user, requestCreateRequestRoleAccDto.data());
+            case DELIVER -> deliverService.init_account(user, requestCreateRequestRoleAccDto.data());
             case SELLER -> sellerService.init_account(user, requestCreateRequestRoleAccDto.data());
         }
         return new ResponseLayout<>(requestRoleAccount, "Create successfully!", true);
@@ -55,7 +55,7 @@ public class RequestRoleAccountServiceImpl implements RequestRoleAccountService 
     public void cancelAccount(UserEntity user) {
         switch (user.getRole()) {
             case SELLER -> sellerService.set_enable_account(user.getId(), false);
-            case DELIVER -> deliveryService.set_enable_account(user.getId(), false);
+            case DELIVER -> deliverService.set_enable_account(user.getId(), false);
         }
     }
 
@@ -71,7 +71,7 @@ public class RequestRoleAccountServiceImpl implements RequestRoleAccountService 
             }
             case DELIVER -> {
                 userService.changeRole(requestRoleAccount.getUser().getId(), UserRole.DELIVER);
-                deliveryService.set_enable_account(requestRoleAccount.getUser().getId(), true);
+                deliverService.set_enable_account(requestRoleAccount.getUser().getId(), true);
             }
         }
         requestRoleAccount.setHandled_at(new Date());

@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AwsConfiguration {
+    public static final String AVATAR_FOLDER = "avatars";
+
     @Value("${cloud.aws.credentials.access-key}")
     private String ACCESS_KEY;
     @Value("${cloud.aws.credentials.secret-key}")

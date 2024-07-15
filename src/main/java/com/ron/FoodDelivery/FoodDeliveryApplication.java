@@ -3,6 +3,7 @@ package com.ron.FoodDelivery;
 import com.ron.FoodDelivery.auth.dto.RequestRegisterDto;
 import com.ron.FoodDelivery.entities.user.UserRole;
 import com.ron.FoodDelivery.services.UserService;
+import com.ron.FoodDelivery.utils.LogUtil;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -10,6 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.SQLException;
 
 @SpringBootApplication
 public class FoodDeliveryApplication {

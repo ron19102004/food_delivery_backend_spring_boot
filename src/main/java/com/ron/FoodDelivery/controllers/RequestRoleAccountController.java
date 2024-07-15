@@ -56,7 +56,7 @@ public class RequestRoleAccountController {
     }
 
     @PostMapping("/{id}/handle")
-    public ResponseEntity<ResponseLayout<Object>> handleRoleAccount(@RequestParam("id") Long id, @RequestBody RequestHandleAccountDto requestHandleAccountDto) {
+    public ResponseEntity<ResponseLayout<Object>> handleRoleAccount(@PathVariable("id") Long id, @RequestBody RequestHandleAccountDto requestHandleAccountDto) {
         requestRoleAccountService.handle(id, requestHandleAccountDto.is_accepted());
         return ResponseEntity.ok(new ResponseLayout<>(null, "Handled!", true));
     }
