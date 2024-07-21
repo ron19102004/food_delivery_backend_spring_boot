@@ -49,3 +49,8 @@ cloud:
       auto: false
     bucket:
       name: food-delivery-ron-app
+constant:
+  images:
+    default:
+      avatar: https://cdn-icons-png.flaticon.com/512/6596/6596121.png
+      category: https://image.pngaaa.com/854/6338854-middle.png

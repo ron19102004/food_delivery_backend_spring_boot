@@ -11,4 +11,5 @@ public abstract class RegexValid {
     public abstract boolean isEmail(String email);
 
     public abstract boolean isTel(String tel);
+    public abstract boolean isAwsS3Url(String url);
 }

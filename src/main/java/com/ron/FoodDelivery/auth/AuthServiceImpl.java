@@ -15,7 +15,6 @@ import com.ron.FoodDelivery.repositories.UserRepository;
 import com.ron.FoodDelivery.services.OtpService;
 import com.ron.FoodDelivery.services.TokenService;
 import com.ron.FoodDelivery.services.UserService;
-import com.ron.FoodDelivery.utils.Constant;
 import com.ron.FoodDelivery.utils.RegexValid;
 import com.ron.FoodDelivery.utils.ResponseLayout;
 import jakarta.persistence.EntityManager;

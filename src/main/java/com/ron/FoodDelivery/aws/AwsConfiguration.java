@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AwsConfiguration {
     public static final String AVATAR_FOLDER = "avatars";
+     public static final String CATEGORY_FOLDER = "categories";
 
     @Value("${cloud.aws.credentials.access-key}")
     private String ACCESS_KEY;

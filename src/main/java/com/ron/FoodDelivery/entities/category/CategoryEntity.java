@@ -22,7 +22,7 @@ public class CategoryEntity extends EntityBase {
     private String name;
     private String image;
     @ColumnDefault("false")
-    private String deleted;
+    private Boolean deleted;
     //relationships
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "category",orphanRemoval = true)

@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfiguration {
     public final static String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     public final static String TEL_REGEX = "^(\\+[0-9]{1,3})?[0-9]{10,}$";
+    public final static String AWS_S3_URL_REGEX = "";
     @Autowired
     private UserRepository userRepository;
 
@@ -57,6 +58,11 @@ public class ApplicationConfiguration {
             @Override
             public boolean isTel(String tel) {
                 return check(TEL_REGEX, tel);
+            }
+
+            @Override
+            public boolean isAwsS3Url(String url) {
+                return check(AWS_S3_URL_REGEX,url);
             }
         };
     }

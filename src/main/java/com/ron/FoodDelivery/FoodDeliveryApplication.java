@@ -6,21 +6,21 @@ import com.ron.FoodDelivery.services.UserService;
 import com.ron.FoodDelivery.utils.LogUtil;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.sql.SQLException;
 
 @SpringBootApplication
 public class FoodDeliveryApplication {
+    @Value("${server.port}")
+    private int PORT;
     @Autowired
     private UserService userService;
 
     @PostConstruct
-    private void initializer() {
+    private void initialize() {
+        LogUtil.initialize("C://AppLog/food-delivery", "food-delivery");
+        LogUtil.log(FoodDeliveryApplication.class, "SwaggerURL: http://localhost:" + PORT + "/swagger-ui/index.html", LogUtil.Status.INFO);
         userService.save(UserRole.ADMIN, RequestRegisterDto.builder()
                 .email("ron19102004@gmail.com")
                 .first_name("Admin")
