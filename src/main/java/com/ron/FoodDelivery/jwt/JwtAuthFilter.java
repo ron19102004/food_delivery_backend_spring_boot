@@ -4,7 +4,8 @@ import com.ron.FoodDelivery.entities.token.TokenEntity;
 import com.ron.FoodDelivery.entities.token.UserAgent;
 import com.ron.FoodDelivery.exceptions.ServiceException;
 import com.ron.FoodDelivery.services.TokenService;
-import com.ron.FoodDelivery.utils.LogUtil;
+//import com.ron.FoodDelivery.utils.LogUtil;
+import com.ron.FoodDelivery.utils.ConsoleUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,7 +38,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NotNull HttpServletRequest request,
                                     @NotNull HttpServletResponse response,
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
-        LogUtil.log(JwtAuthFilter.class, "IP:" + request.getRemoteAddr(), LogUtil.Status.INFO);
         final String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);

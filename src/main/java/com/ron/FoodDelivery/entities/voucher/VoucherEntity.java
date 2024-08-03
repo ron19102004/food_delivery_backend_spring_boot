@@ -26,8 +26,6 @@ public class VoucherEntity extends EntityBase {
     private String code;
     @Column(nullable = false)
     private String name;
-    @ColumnDefault("false")
-    private Boolean is_active;
     @Column(nullable = false)
     private Long quantity;
     @Column(nullable = false)
@@ -45,7 +43,7 @@ public class VoucherEntity extends EntityBase {
     //relationships
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "seller_id", referencedColumnName = "id")
     private SellerEntity seller;
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)

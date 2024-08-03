@@ -1,7 +1,10 @@
 package com.ron.FoodDelivery.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.util.regex.Pattern;
 
+@Component
 public abstract class RegexValid {
     protected boolean check(String regex, String value) {
         final Pattern pattern = Pattern.compile(regex);

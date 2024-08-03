@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DeliveryRepository extends JpaRepository<DeliverEntity, Long> {
-    @Query("SELECT d FROM DeliverEntity d WHERE d.user.username = :username")
-    DeliverEntity findByUsername(@Param("username")String username);
+public interface DeliverRepository extends JpaRepository<DeliverEntity, Long> {
+    @Query("SELECT d FROM DeliverEntity d WHERE d.user.username = :username AND d.enabled = :enabled")
+    DeliverEntity findByUsername(@Param("username")String username,@Param("enabled") Boolean enabled);
 }

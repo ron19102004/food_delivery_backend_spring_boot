@@ -44,6 +44,7 @@ public class SellerEntity {
     private Boolean enabled;
     //relationships;
     @MapsId
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id", nullable = false)
     private UserEntity user;

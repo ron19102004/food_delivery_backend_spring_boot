@@ -1,4 +1,4 @@
-package com.ron.FoodDelivery.configurations;
+package com.ron.FoodDelivery.controllers;
 
 import com.ron.FoodDelivery.entities.delivery_charges.DeliveryChargesEntity;
 import com.ron.FoodDelivery.entities.delivery_charges.dto.RequestCreateDeliveryChargesDto;

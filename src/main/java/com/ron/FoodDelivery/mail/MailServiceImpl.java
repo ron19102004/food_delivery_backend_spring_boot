@@ -1,6 +1,7 @@
 package com.ron.FoodDelivery.mail;
 
 import com.ron.FoodDelivery.entities.user.UserEntity;
+import com.ron.FoodDelivery.utils.ConsoleUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class MailServiceImpl extends AbstractMailTemplateDefault implements Mail
     @Value("${spring.mail.username}")
     private String USERNAME_APP;
     private static final String ENCODING = "UTF-8";
+    private final ConsoleUtil log = ConsoleUtil.newConsoleLog(this.getClass());
 
     @Override
     public void send_otp(UserEntity user, String otp) {
@@ -40,7 +42,7 @@ public class MailServiceImpl extends AbstractMailTemplateDefault implements Mail
             mimeMessageHelper.setText(content, true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException exception) {
-            exception.getCause();
+            log.err(exception,"At function send_otp");
         }
     }
 }

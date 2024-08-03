@@ -7,8 +7,8 @@ import com.ron.FoodDelivery.entities.category.dto.RequestCreateCategoryDto;
 import com.ron.FoodDelivery.exceptions.EntityNotFoundException;
 import com.ron.FoodDelivery.repositories.CategoryRepository;
 import com.ron.FoodDelivery.services.CategoryService;
+import com.ron.FoodDelivery.utils.ConsoleUtil;
 import com.ron.FoodDelivery.utils.Constant;
-import com.ron.FoodDelivery.utils.LogUtil;
 import com.ron.FoodDelivery.utils.RegexValid;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -31,6 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private RegexValid regexValid;
     private final ExecutorService executorService = Executors.newFixedThreadPool(6);
+    private final ConsoleUtil log = ConsoleUtil.newConsoleLog(this.getClass());
+
 
     @Override
     public CategoryEntity create(RequestCreateCategoryDto requestCreateCategoryDto) {
@@ -56,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
                 try {
                     awsS3Service.delete(urlOld, AwsConfiguration.CATEGORY_FOLDER);
                 } catch (Exception e) {
-                    LogUtil.log(CategoryServiceImpl.class, e, LogUtil.Status.ERROR);
+                    log.err(e,"Log at function - updateImage");
                 }
             });
         }

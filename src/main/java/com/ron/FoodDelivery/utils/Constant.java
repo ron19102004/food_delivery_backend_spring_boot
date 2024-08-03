@@ -7,4 +7,7 @@ public abstract class Constant {
     public static String AVATAR_DEFAULT_URL;
     @Value("${constant.images.default.category}")
     public static String CATEGORY_DEFAULT_URL;
+    @Value("${constant.images.default.food}")
+    public static String FOOD_POSTER_DEFAULT_URL;
+
 }

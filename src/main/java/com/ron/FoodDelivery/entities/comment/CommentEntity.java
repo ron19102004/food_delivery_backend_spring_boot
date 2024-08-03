@@ -21,6 +21,8 @@ public class CommentEntity {
     private Long id;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+    @Column(nullable = false,unique = true)
+    private String code_order;
     @Column(nullable = false)
     private Emotion emotion;
     //relationships
@@ -29,8 +31,4 @@ public class CommentEntity {
     @MapsId
     @JoinColumn(name = "id")
     private OrderEntity order;
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "food_id", referencedColumnName = "id", nullable = false)
-    private FoodEntity food;
 }

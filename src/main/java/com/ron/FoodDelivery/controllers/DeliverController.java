@@ -16,10 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class DeliverController {
     @Autowired
     private DeliverService deliverService;
+    private final ConsoleUtil log = ConsoleUtil.newConsoleLog(this.getClass());
 
     @PostMapping("/update-information")
     @PreAuthorize(PreAuthUtil.hasDELIVER)
-    public ResponseEntity<ResponseLayout<Object>> update_information(
+    public ResponseEntity<ResponseLayout<Object>> updateInformation(
             @NotNull @RequestBody RequestUpdateInformationDeliverDto requestUpdateInformationDeliverDto
     ) {
         Authentication authentication = SecurityUtil.authentication();
@@ -29,9 +30,9 @@ public class DeliverController {
 
     @PostMapping("/update-avatar")
     @PreAuthorize(PreAuthUtil.hasDELIVER)
-    public ResponseEntity<ResponseLayout<String>> update_avatar(@NotNull @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ResponseLayout<String>> updateAvatar(@NotNull @RequestParam("file") MultipartFile file) {
         Authentication authentication = SecurityUtil.authentication();
-        LogUtil.log(DeliverController.class, file, LogUtil.Status.INFO);
+        log.info(file,"Log at func update_avatar");
         return ResponseEntity.ok(new ResponseLayout<>(
                 deliverService.update_avatar(authentication.getName(), file),
                 "Updated!",

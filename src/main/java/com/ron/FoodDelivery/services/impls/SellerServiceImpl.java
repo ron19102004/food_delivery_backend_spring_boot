@@ -12,6 +12,7 @@ import com.ron.FoodDelivery.exceptions.ServiceException;
 import com.ron.FoodDelivery.repositories.LocationRepository;
 import com.ron.FoodDelivery.repositories.SellerRepository;
 import com.ron.FoodDelivery.services.SellerService;
+import com.ron.FoodDelivery.utils.RegexValid;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -19,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class SellerServiceImpl implements SellerService {
@@ -30,6 +34,9 @@ public class SellerServiceImpl implements SellerService {
     private EntityManager entityManager;
     @Autowired
     private AwsS3Service awsS3Service;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    @Autowired
+    private RegexValid regexValid;
 
     @Override
     public void init_account(UserEntity user, RequestCreateRequestRoleAccDataDto requestCreateRequestRoleAccDataDto) {
@@ -46,7 +53,7 @@ public class SellerServiceImpl implements SellerService {
     @Transactional
     @Override
     public void update_information(String username, RequestUpdateInformationSellerDto requestUpdateInformationSellerDto) {
-        SellerEntity seller = sellerRepository.findByUsername(username);
+        SellerEntity seller = sellerRepository.findByUsernameAndEnabled(username,true);
         if (seller == null) throw new ServiceException("Seller not found!", HttpStatus.NOT_FOUND);
         LocationEntity location = locationRepository.findById(requestUpdateInformationSellerDto.location_id()).orElse(null);
         if (location == null) throw new ServiceException("Location not found!", HttpStatus.NOT_FOUND);
@@ -65,11 +72,17 @@ public class SellerServiceImpl implements SellerService {
     @Transactional
     @Override
     public String update_avatar(String username, MultipartFile image) {
-        SellerEntity seller = sellerRepository.findByUsername(username);
+        SellerEntity seller = sellerRepository.findByUsernameAndEnabled(username,true);
         if (seller == null) throw new ServiceException("Seller not found!", HttpStatus.NOT_FOUND);
+        String urlOld = seller.getAvatar();
         String url = awsS3Service.upload(image, AwsConfiguration.AVATAR_FOLDER);
         seller.setAvatar(url);
         entityManager.merge(seller);
+        if (regexValid.isAwsS3Url(urlOld)){
+            executorService.submit(() -> {
+                awsS3Service.delete(urlOld,AwsConfiguration.AVATAR_FOLDER);
+            });
+        }
         return url;
     }
 

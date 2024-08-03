@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.ron.FoodDelivery.utils.LogUtil;
+import com.ron.FoodDelivery.utils.ConsoleUtil;
 import jakarta.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     private AmazonS3 s3Client;
     @Autowired
     private ServletContext servletContext;
-
+    private final ConsoleUtil log = ConsoleUtil.newConsoleLog(this.getClass());
     private File convertMultipartFileToFile(MultipartFile multipartFile) {
         File fileConvert = null;
         try {
@@ -50,7 +50,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
             // Transfer multipart file data to the temporary file
             multipartFile.transferTo(fileConvert);
         } catch (IOException e) {
-            LogUtil.log(AwsS3ServiceImpl.class,e, LogUtil.Status.ERROR);
+            log.err(e,"At func convertMultipartFileToFile");
         }
         return fileConvert;
     }

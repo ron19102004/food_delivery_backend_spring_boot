@@ -24,6 +24,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderEntity extends EntityBase {
+    @Column(nullable = false,unique = true)
+    private String code_order;
     @Column(nullable = false)
     private Double latitude_receive;
     @Column(nullable = false)
@@ -36,10 +38,14 @@ public class OrderEntity extends EntityBase {
     private Integer quantity;
     @Column(columnDefinition = "TEXT")
     private String note;
+    @Column(columnDefinition = "TEXT")
+    private String reason_cancel;
     @Column(nullable = false)
     private OrderStatus status;
     @Column(nullable = false)
     private Double total;
+    @Column(nullable = false)
+    private Double kilometer;
     @Column(nullable = false,columnDefinition = "TEXT")
     private String address;
     //relationships

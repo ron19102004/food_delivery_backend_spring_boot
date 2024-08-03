@@ -30,6 +30,7 @@ public class FoodEntity extends EntityBase {
     private Double sale_price;
     private Float sale_off;
     private Long sold;
+    @Column(columnDefinition = "TEXT")
     private String poster;
     @ColumnDefault("false")
     private Boolean deleted;
@@ -46,7 +47,4 @@ public class FoodEntity extends EntityBase {
     @JsonIgnore
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY,orphanRemoval = true)
     private List<OrderEntity> orderEntities;
-    @JsonIgnore
-    @OneToMany(mappedBy = "food",  fetch = FetchType.LAZY,orphanRemoval = true)
-    private List<CommentEntity> commentEntities;
 }
