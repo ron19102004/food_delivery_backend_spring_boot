@@ -17,6 +17,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,10 @@ import java.util.concurrent.Executors;
 
 @Service
 public class SellerServiceImpl implements SellerService {
+    @Value("${constant.images.default.seller-bg}")
+    private String SELLER_BACKGROUND;
+    @Value("${constant.images.default.avatar}")
+    private String AVATAR_DEFAULT_URL;
     @Autowired
     private SellerRepository sellerRepository;
     @Autowired
@@ -46,6 +51,9 @@ public class SellerServiceImpl implements SellerService {
                 .enabled(false)
                 .name(requestCreateRequestRoleAccDataDto.name())
                 .user(user)
+                .address("Waiting update...")
+                .background_image(SELLER_BACKGROUND)
+                .avatar(AVATAR_DEFAULT_URL)
                 .build();
         sellerRepository.save(sellerEntity);
     }

@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface DeliverRepository extends JpaRepository<DeliverEntity, Long> {
     @Query("SELECT d FROM DeliverEntity d WHERE d.user.username = :username AND d.enabled = :enabled")
     DeliverEntity findByUsername(@Param("username")String username,@Param("enabled") Boolean enabled);
+    @Query("SELECT COUNT(d.id) FROM DeliverEntity d WHERE d.enabled = TRUE")
+    Long totalsDeliver();
 }

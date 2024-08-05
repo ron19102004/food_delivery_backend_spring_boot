@@ -52,7 +52,7 @@ public class SellerEntity {
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY,orphanRemoval = true)
     private List<RatingEntity> ratingEntities;
     @ManyToOne
-    @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
     private LocationEntity location;
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "seller",orphanRemoval = true)

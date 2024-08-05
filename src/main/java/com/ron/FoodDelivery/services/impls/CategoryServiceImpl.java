@@ -8,12 +8,12 @@ import com.ron.FoodDelivery.exceptions.EntityNotFoundException;
 import com.ron.FoodDelivery.repositories.CategoryRepository;
 import com.ron.FoodDelivery.services.CategoryService;
 import com.ron.FoodDelivery.utils.ConsoleUtil;
-import com.ron.FoodDelivery.utils.Constant;
 import com.ron.FoodDelivery.utils.RegexValid;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +22,8 @@ import java.util.concurrent.Executors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+    @Value("${constant.images.default.category}")
+    private String CATEGORY_DEFAULT_URL;
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
@@ -39,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryEntity category = CategoryEntity.builder()
                 .name(requestCreateCategoryDto.name())
                 .deleted(false)
-                .image(Constant.CATEGORY_DEFAULT_URL)
+                .image(CATEGORY_DEFAULT_URL)
                 .build();
         return categoryRepository.save(category);
     }

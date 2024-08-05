@@ -3,23 +3,30 @@ package com.ron.FoodDelivery.services.impls;
 import com.ron.FoodDelivery.auth.dto.RequestRegisterDto;
 import com.ron.FoodDelivery.entities.user.UserEntity;
 import com.ron.FoodDelivery.entities.user.UserRole;
+import com.ron.FoodDelivery.entities.user.dto.ResponseTotalUserDto;
 import com.ron.FoodDelivery.exceptions.EntityNotFoundException;
+import com.ron.FoodDelivery.repositories.DeliverRepository;
+import com.ron.FoodDelivery.repositories.SellerRepository;
 import com.ron.FoodDelivery.repositories.UserRepository;
 import com.ron.FoodDelivery.services.UserService;
-import com.ron.FoodDelivery.utils.Constant;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
+    @Value("${constant.images.default.avatar}")
+    private String AVATAR_DEFAULT_URL;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SellerRepository sellerRepository;
+    @Autowired
+    private DeliverRepository deliverRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @PersistenceContext
@@ -45,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 .email(requestRegisterDto.email())
                 .role(role)
                 .is_locked(false)
-                .avatar(Constant.AVATAR_DEFAULT_URL)
+                .avatar(AVATAR_DEFAULT_URL)
                 .build());
     }
     @Transactional
@@ -54,5 +61,20 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByIdAndIsLocked(userId,false);
         user.setRole(role);
         entityManager.merge(user);
+    }
+    @Transactional
+    @Override
+    public void resetRole(Long userId) {
+        UserEntity user = userRepository.findByIdAndIsLocked(userId,false);
+        user.setRole(UserRole.USER);
+        entityManager.merge(user);
+    }
+
+    @Override
+    public ResponseTotalUserDto totalsUser() {
+        Long totalsDeliver = deliverRepository.totalsDeliver();
+        Long totalsSeller = sellerRepository.totalsSeller();
+        Long totalsUser = userRepository.totalsUsers();
+        return new ResponseTotalUserDto(totalsUser,totalsDeliver,totalsSeller);
     }
 }

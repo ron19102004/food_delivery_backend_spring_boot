@@ -21,7 +21,7 @@ public class LocationEntity extends EntityBase {
     private String name;
     @ColumnDefault("false")
     private Boolean deleted;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false)
     private Integer code;
     //relationships
     @JsonIgnore

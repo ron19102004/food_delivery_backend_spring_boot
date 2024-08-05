@@ -18,7 +18,7 @@ public class GlobalException {
     public ResponseEntity<ResponseLayout<Object>> exceptionHandle(Exception exception) {
         log.err(exception);
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-                .body(new ResponseLayout<>(exception.getMessage(), "Error", false));
+                .body(new ResponseLayout<>(exception.getMessage(), exception.getMessage(), false));
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
@@ -40,6 +40,12 @@ public class GlobalException {
         log.err(exception);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ResponseLayout<>("Username not found", exception.getMessage(), false));
+    }
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ResponseLayout<Object>> exceptionHandle(EntityNotFoundException exception) {
+        log.err(exception);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseLayout<>("Entity not found", exception.getMessage(), false));
     }
 
     @ExceptionHandler(ServiceException.class)

@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -79,6 +80,7 @@ public class DeliverServiceImpl implements DeliverService {
                 .enabled(false)
                 .name(requestCreateRequestRoleAccDataDto.name())
                 .user(user)
+                .issued_at(new Date())
                 .build();
         deliverRepository.save(sellerEntity);
     }

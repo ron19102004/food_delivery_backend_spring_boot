@@ -16,12 +16,12 @@ import com.ron.FoodDelivery.repositories.CommentRepository;
 import com.ron.FoodDelivery.repositories.FoodRepository;
 import com.ron.FoodDelivery.repositories.SellerRepository;
 import com.ron.FoodDelivery.services.FoodService;
-import com.ron.FoodDelivery.utils.Constant;
 import com.ron.FoodDelivery.utils.RegexValid;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +37,8 @@ import java.util.concurrent.Executors;
 
 @Service
 public class FoodServiceImpl implements FoodService {
+    @Value("${constant.images.default.food}")
+    private String FOOD_POSTER_DEFAULT_URL;
     @Autowired
     private FoodRepository foodRepository;
     @Autowired
@@ -74,7 +76,7 @@ public class FoodServiceImpl implements FoodService {
                 .description(dto.description())
                 .category(category)
                 .seller(seller)
-                .poster(Constant.FOOD_POSTER_DEFAULT_URL)
+                .poster(FOOD_POSTER_DEFAULT_URL)
                 .sold(0L)
                 .sale_off(0f)
                 .sale_price(dto.price())

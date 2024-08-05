@@ -1,9 +1,11 @@
 package com.ron.FoodDelivery.controllers;
 
 import com.ron.FoodDelivery.entities.request_role_account.RequestRole;
+import com.ron.FoodDelivery.entities.request_role_account.RequestRoleAccount;
 import com.ron.FoodDelivery.entities.request_role_account.RequestStatus;
 import com.ron.FoodDelivery.entities.request_role_account.dto.RequestCreateRequestRoleAccDto;
 import com.ron.FoodDelivery.entities.request_role_account.dto.RequestHandleAccountDto;
+import com.ron.FoodDelivery.entities.request_role_account.dto.ResponseGetAllRequestRole;
 import com.ron.FoodDelivery.entities.user.UserEntity;
 import com.ron.FoodDelivery.services.RequestRoleAccountService;
 import com.ron.FoodDelivery.services.UserService;
@@ -37,10 +39,15 @@ public class RequestRoleAccountController {
     public ResponseEntity<List<RequestStatus>> requestStatus() {
         return ResponseEntity.ok(List.of(RequestStatus.values()));
     }
+    @GetMapping("/all")
+    @PreAuthorize(PreAuthUtil.hasADMIN)
+    public ResponseEntity<ResponseLayout<ResponseGetAllRequestRole>> getAllRequestRole() {
+        return ResponseEntity.ok(new ResponseLayout<>(requestRoleAccountService.getAll(),"Got!", true));
+    }
 
     @PostMapping("/new")
     @PreAuthorize(PreAuthUtil.hasUSER)
-    public ResponseEntity<ResponseLayout<Object>> requestRoleAccount(@RequestBody RequestCreateRequestRoleAccDto requestCreateRequestRoleAccDto) {
+    public ResponseEntity<ResponseLayout<RequestRoleAccount>> requestRoleAccount(@RequestBody RequestCreateRequestRoleAccDto requestCreateRequestRoleAccDto) {
         Authentication authentication = SecurityUtil.authentication();
         UserEntity user = userService.findByUsername(authentication.getName());
         return ResponseEntity.ok(requestRoleAccountService.createRequestRoleAcc(user, requestCreateRequestRoleAccDto));
@@ -52,6 +59,7 @@ public class RequestRoleAccountController {
         Authentication authentication = SecurityUtil.authentication();
         UserEntity user = userService.findByUsername(authentication.getName());
         requestRoleAccountService.cancelAccount(user);
+        userService.resetRole(user.getId());
         return ResponseEntity.ok(new ResponseLayout<>(null, "Canceled!", true));
     }
 

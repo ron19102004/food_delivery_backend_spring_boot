@@ -29,6 +29,8 @@ public class TokenServiceImpl implements TokenService {
                 TokenEntity item = tokenEntities.get(index);
                 if (!jwtService.isTokenValid(item.getAccess_token())){
                     tokenRepository.delete(item);
+                    index++;
+                    continue;
                 }
                 if ((index == MAX_TOKEN_LOGIN - 1) && item.getUser_agent() == UserAgent.MOBILE) {
                     tokenToDelete = tokenEntities.getFirst();

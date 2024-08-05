@@ -25,7 +25,7 @@ public class LocationController {
     }
 
     @PostMapping("/new")
-//    @PreAuthorize(PreAuthUtil.hasADMIN)
+    @PreAuthorize(PreAuthUtil.hasADMIN)
     public ResponseEntity<ResponseLayout<Object>> createLocation(@RequestBody RequestCreateLocationDto requestCreateLocationDto) {
         locationService.create(requestCreateLocationDto);
         return ResponseEntity.ok(new ResponseLayout<>(null, "Created!", true));

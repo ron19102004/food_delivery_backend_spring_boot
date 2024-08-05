@@ -6,11 +6,10 @@ import com.ron.FoodDelivery.auth.dto.RequestVerifyOTPDto;
 import com.ron.FoodDelivery.auth.dto.ResponseLoginDto;
 import com.ron.FoodDelivery.entities.token.UserAgent;
 import com.ron.FoodDelivery.entities.user.UserEntity;
-import com.ron.FoodDelivery.utils.PreAuthUtil;
-import com.ron.FoodDelivery.utils.ResponseLayout;
-import com.ron.FoodDelivery.utils.SecurityUtil;
+import com.ron.FoodDelivery.utils.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     private AuthService authService;
-
     @PostMapping("/login")
     public ResponseEntity<ResponseLayout<ResponseLoginDto>> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletRequest request) {
         String userAgentRequest = request.getHeader("User-Agent");

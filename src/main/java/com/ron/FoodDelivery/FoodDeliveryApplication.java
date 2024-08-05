@@ -27,7 +27,7 @@ public class FoodDeliveryApplication {
                 .last_name("Admin")
                 .phone_number("0392477615")
                 .username("admin")
-                .password("admin")
+                .password("admin12345")
                 .build());
     }
 

@@ -3,6 +3,7 @@ package com.ron.FoodDelivery.services.impls;
 import com.ron.FoodDelivery.entities.request_role_account.RequestRoleAccount;
 import com.ron.FoodDelivery.entities.request_role_account.RequestStatus;
 import com.ron.FoodDelivery.entities.request_role_account.dto.RequestCreateRequestRoleAccDto;
+import com.ron.FoodDelivery.entities.request_role_account.dto.ResponseGetAllRequestRole;
 import com.ron.FoodDelivery.entities.user.UserEntity;
 import com.ron.FoodDelivery.entities.user.UserRole;
 import com.ron.FoodDelivery.exceptions.EntityNotFoundException;
@@ -18,7 +19,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class RequestRoleAccountServiceImpl implements RequestRoleAccountService {
@@ -35,7 +38,7 @@ public class RequestRoleAccountServiceImpl implements RequestRoleAccountService 
 
 
     @Override
-    public ResponseLayout<Object> createRequestRoleAcc(UserEntity user, RequestCreateRequestRoleAccDto requestCreateRequestRoleAccDto) {
+    public ResponseLayout<RequestRoleAccount> createRequestRoleAcc(UserEntity user, RequestCreateRequestRoleAccDto requestCreateRequestRoleAccDto) {
         RequestRoleAccount _requestRoleAccount = RequestRoleAccount.builder()
                 .user(user)
                 .role(requestCreateRequestRoleAccDto.role())
@@ -78,5 +81,18 @@ public class RequestRoleAccountServiceImpl implements RequestRoleAccountService 
         requestRoleAccount.setIs_accepted(is_accepted);
         requestRoleAccount.setStatus(RequestStatus.HANDLED);
         entityManager.merge(requestRoleAccount);
+    }
+
+    @Override
+    public ResponseGetAllRequestRole getAll() {
+        List<RequestRoleAccount> list = requestRoleAccountRepository.findAll();
+        ArrayList<RequestRoleAccount> handled = new ArrayList<>();
+        ArrayList<RequestRoleAccount> waiting = new ArrayList<>();
+        list.forEach(requestRoleAccount -> {
+            if (requestRoleAccount.getStatus().equals(RequestStatus.HANDLED))
+                handled.add(requestRoleAccount);
+            else waiting.add(requestRoleAccount);
+        });
+        return new ResponseGetAllRequestRole(handled,waiting);
     }
 }
