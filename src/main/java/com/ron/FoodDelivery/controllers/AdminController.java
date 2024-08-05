@@ -2,9 +2,11 @@ package com.ron.FoodDelivery.controllers;
 
 import com.ron.FoodDelivery.entities.user.dto.ResponseTotalUserDto;
 import com.ron.FoodDelivery.services.UserService;
+import com.ron.FoodDelivery.utils.PreAuthUtil;
 import com.ron.FoodDelivery.utils.ResponseLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,7 @@ public class AdminController {
     @Autowired
     private UserService userService;
     @GetMapping("/user/total")
+    @PreAuthorize(PreAuthUtil.hasADMIN)
     public ResponseEntity<ResponseLayout<ResponseTotalUserDto>> getTotalUser() {
         return ResponseEntity.ok(new ResponseLayout<>(userService.totalsUser(), "Got!", true));
     }

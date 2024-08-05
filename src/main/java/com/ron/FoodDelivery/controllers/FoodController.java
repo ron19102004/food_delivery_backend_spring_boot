@@ -38,14 +38,6 @@ public class FoodController {
     }
 
     @PreAuthorize(PreAuthUtil.hasSELLER)
-    @PostMapping("/{food_id}/upload-poster")
-    public ResponseEntity<ResponseLayout<String>> uploadPoster(@PathVariable("food_id") Long food_id, @RequestParam("file") MultipartFile file) {
-        Authentication authentication = SecurityUtil.authentication();
-        String url = foodService.uploadPoster(authentication.getName(), food_id, file);
-        return ResponseEntity.ok(new ResponseLayout<>(url, "Uploaded!", true));
-    }
-
-    @PreAuthorize(PreAuthUtil.hasSELLER)
     @PatchMapping("/{id}/update")
     public ResponseEntity<ResponseLayout<FoodEntity>> updateFood(
             @PathVariable("id") Long id, @RequestBody RequestUpdateFoodDto requestUpdateFoodDto) {

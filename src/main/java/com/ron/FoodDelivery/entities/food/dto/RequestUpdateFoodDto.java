@@ -8,7 +8,8 @@ public record RequestUpdateFoodDto(
         @NotNull String name,
         @NotNull @Length(min = 20) String description,
         @NotNull Double price,
-        @NotNull Float sale_off
+        @NotNull Float sale_off,
+        @NotNull String poster_url
 
 ) {
 }

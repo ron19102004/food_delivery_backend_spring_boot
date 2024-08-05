@@ -18,6 +18,4 @@ public interface FoodService {
     Page<FoodEntity> findBySellerIdWithPage(Long sellerId, int pageNumber);
 
     ResponseDetailsFoodDto getDetailsFood(Long food_id);
-
-    String uploadPoster(String usernameSeller, Long food_id, MultipartFile file);
 }

@@ -46,7 +46,6 @@ public class SecurityConfiguration {
                 .cors(corConfigs -> corConfigs.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(httpRequests -> httpRequests
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
                 .exceptionHandling(expHandling -> expHandling.authenticationEntryPoint(authenticationEntryPointCustom))
                 .authenticationProvider(authenticationProvider)

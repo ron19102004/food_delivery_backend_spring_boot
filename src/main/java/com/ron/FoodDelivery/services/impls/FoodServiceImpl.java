@@ -50,8 +50,6 @@ public class FoodServiceImpl implements FoodService {
     @Autowired
     private CommentRepository commentRepository;
     @Autowired
-    private AwsS3Service awsS3Service;
-    @Autowired
     private RegexValid regexValid;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
@@ -76,7 +74,7 @@ public class FoodServiceImpl implements FoodService {
                 .description(dto.description())
                 .category(category)
                 .seller(seller)
-                .poster(FOOD_POSTER_DEFAULT_URL)
+                .poster(dto.poster_url())
                 .sold(0L)
                 .sale_off(0f)
                 .sale_price(dto.price())
@@ -114,6 +112,7 @@ public class FoodServiceImpl implements FoodService {
         food.setDescription(dto.description());
         food.setPrice(dto.price());
         food.setSale_off(dto.sale_off());
+        food.setPoster(dto.poster_url());
 
         Double sale_price = food.getPrice() - (food.getPrice() * (food.getSale_off() / 100));
         food.setSale_price(sale_price);
@@ -138,28 +137,5 @@ public class FoodServiceImpl implements FoodService {
         FoodEntity food = foodRepository.findByIdAndDeleted(food_id, false);
         List<CommentEntity> comments = commentRepository.findByFoodId(food_id);
         return new ResponseDetailsFoodDto(food, comments);
-    }
-
-    @Transactional
-    @Override
-    public String uploadPoster(String usernameSeller, Long food_id, MultipartFile file) {
-        FoodEntity food = foodRepository.findByIdAndDeleted(food_id, false);
-        if (food == null)
-            throw new EntityNotFoundException("Food not found");
-        SellerEntity seller = sellerRepository.findByUsernameAndEnabled(usernameSeller, true);
-        if (seller == null)
-            throw new EntityNotFoundException("Seller not found");
-        if (!Objects.equals(food.getSeller().getId(), seller.getId()))
-            throw new ServiceException("Seller is forbidden", HttpStatus.FORBIDDEN);
-        String urlOld = food.getPoster();
-        String urlNew = awsS3Service.upload(file, AwsConfiguration.POSTER_FOOD);
-        food.setPoster(urlNew);
-        entityManager.merge(food);
-        if (regexValid.isAwsS3Url(urlOld)) {
-            executorService.submit(() -> {
-                awsS3Service.delete(urlOld, AwsConfiguration.POSTER_FOOD);
-            });
-        }
-        return urlNew;
     }
 }

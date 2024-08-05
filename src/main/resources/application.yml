@@ -41,14 +41,14 @@ cloud:
   endpointUrl: https://s3.ap-southeast-2.amazonaws.com
   aws:
     credentials:
-      access-key: AKIAQ3EGWTN6CXOVNZMO
-      secret-key: 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
+      access-key: AKIAQ3EGWTN6FUXUZMWV
+      secret-key: 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
     region:
       static: ap-southeast-2
     stack:
       auto: false
     bucket:
-      name: food-delivery-ron-app
+      name: fooddelivery-123
 constant:
   images:
     default:
