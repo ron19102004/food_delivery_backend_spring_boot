@@ -1,6 +1,9 @@
 package com.ron.FoodDelivery.controllers;
 
+import com.ron.FoodDelivery.entities.order.dto.ResponseAllOrderSellerDto;
+import com.ron.FoodDelivery.entities.seller.SellerEntity;
 import com.ron.FoodDelivery.entities.seller.dto.RequestUpdateInformationSellerDto;
+import com.ron.FoodDelivery.services.OrderService;
 import com.ron.FoodDelivery.services.SellerService;
 import com.ron.FoodDelivery.utils.*;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class SellerController {
     @Autowired
     private SellerService sellerService;
+    @Autowired
+    private OrderService orderService;
     private final ConsoleUtil log = ConsoleUtil.newConsoleLog(this.getClass());
 
     @PostMapping("/update-information")
@@ -28,14 +33,16 @@ public class SellerController {
         return ResponseEntity.ok(new ResponseLayout<>(null, "Updated!", true));
     }
 
-    @PostMapping("/update-avatar")
+    @GetMapping("/me")
     @PreAuthorize(PreAuthUtil.hasSELLER)
-    public ResponseEntity<ResponseLayout<String>> updateAvatar(@NotNull @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ResponseLayout<SellerEntity>> getMyInfo() {
         Authentication authentication = SecurityUtil.authentication();
-        log.info(file,"Log at func update_avatar");
-        return ResponseEntity.ok(new ResponseLayout<>(
-                sellerService.update_avatar(authentication.getName(), file),
-                "Updated!",
-                true));
+        return ResponseEntity.ok(new ResponseLayout<>(sellerService.findByUsername(authentication.getName()), "Got!", true));
+    }
+    @GetMapping("/orders")
+    @PreAuthorize(PreAuthUtil.hasSELLER)
+    public ResponseEntity<ResponseLayout<ResponseAllOrderSellerDto>> getOrders() {
+        Authentication authentication = SecurityUtil.authentication();
+        return ResponseEntity.ok(new ResponseLayout<>(orderService.getOrdersBySellerUsername(authentication.getName()), "Got!!", true));
     }
 }

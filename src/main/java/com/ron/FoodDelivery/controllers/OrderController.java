@@ -38,7 +38,7 @@ public class OrderController {
     }
 
     @PreAuthorize(PreAuthUtil.hasUSER)
-    @PostMapping("/food/{food_id}")
+    @PostMapping("/new/{food_id}")
     public ResponseEntity<ResponseLayout<OrderEntity>> createOrder(@PathVariable("food_id") Long food_id, @RequestBody RequestCreateOrderDto requestCreateOrderDto) {
         Authentication authentication = SecurityUtil.authentication();
         OrderEntity orderEntity = orderService.create(food_id, authentication.getName(), requestCreateOrderDto);
@@ -53,7 +53,7 @@ public class OrderController {
     }
 
     @PreAuthorize(PreAuthUtil.hasDELIVER)
-    @PatchMapping("/deliver/{order_id}")
+    @PatchMapping("/update-deliver/{order_id}")
     public ResponseEntity<ResponseLayout<OrderEntity>> updateDeliver(@PathVariable("order_id") Long order_id) {
         Authentication authentication = SecurityUtil.authentication();
         OrderEntity orderEntity = orderService.updateDeliver(order_id, authentication.getName());
@@ -61,7 +61,7 @@ public class OrderController {
     }
 
     @PreAuthorize(PreAuthUtil.hasDELIVER)
-    @PostMapping("/process/{order_id}")
+    @PostMapping("/deliver/update-process/{order_id}")
     public ResponseEntity<ResponseLayout<ProcessEntity>> createProcess(@PathVariable("order_id") Long order_id, @RequestBody RequestCreateProcessDto requestCreateProcessDto) {
         Authentication authentication = SecurityUtil.authentication();
         ProcessEntity process = processService.create(authentication.getName(), order_id, requestCreateProcessDto);
@@ -69,7 +69,7 @@ public class OrderController {
     }
 
     @PreAuthorize(PreAuthUtil.hasUSER_SELLER)
-    @DeleteMapping("/cancel")
+    @PostMapping("/cancel")
     public ResponseEntity<ResponseLayout<Object>> cancelOrder(@RequestBody RequestCancelOrderDto requestCancelOrderDto) {
         Authentication authentication = SecurityUtil.authentication();
         orderService.cancelOrder(authentication.getName(), requestCancelOrderDto);

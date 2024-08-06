@@ -55,12 +55,29 @@ public class FoodController {
         return ResponseEntity.ok(new ResponseLayout<>(foodEntityPage.getContent(), "Page:" + pageNumber + "/" + foodEntityPage.getTotalPages(), true));
     }
 
-    @GetMapping("/seller/{seller_id}")
+    @GetMapping("/seller/uid/{seller_id}")
     public ResponseEntity<ResponseLayout<List<FoodEntity>>> getBySellerId(
             @PathVariable("seller_id") Long seller_id,
             @RequestParam(value = "page", required = false, defaultValue = "0") int pageNumber
     ) {
         Page<FoodEntity> foodEntityPage = foodService.findBySellerIdWithPage(seller_id, pageNumber);
         return ResponseEntity.ok(new ResponseLayout<>(foodEntityPage.getContent(), "Page:" + pageNumber + "/" + foodEntityPage.getTotalPages(), true));
+    }
+    @GetMapping("/seller/username/{seller_username}")
+    public ResponseEntity<ResponseLayout<List<FoodEntity>>> getBySellerUsername(
+            @PathVariable("seller_username") String seller_username,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int pageNumber
+    ) {
+        Page<FoodEntity> foodEntityPage = foodService.findBySellerUsernameWithPage(seller_username, pageNumber);
+        return ResponseEntity.ok(new ResponseLayout<>(foodEntityPage.getContent(), "Page:" + pageNumber + "/" + foodEntityPage.getTotalPages(), true));
+    }
+    @PreAuthorize(PreAuthUtil.hasSELLER)
+    @DeleteMapping("/{food_id}")
+    public ResponseEntity<ResponseLayout<Object>> deleteById(
+            @PathVariable("food_id")Long food_id
+    ) {
+        Authentication authentication = SecurityUtil.authentication();
+        foodService.deleteById(food_id,authentication.getName());
+        return ResponseEntity.ok(new ResponseLayout<>(null, "Deleted!", true));
     }
 }

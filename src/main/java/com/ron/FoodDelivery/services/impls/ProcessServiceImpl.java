@@ -53,7 +53,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional
     @Override
     public ProcessEntity create(String username, Long order_id, RequestCreateProcessDto requestCreateProcessDto) {
-        OrderEntity orderEntity = orderRepository.findByIdAndStatus(order_id, OrderStatus.HANDING);
+        OrderEntity orderEntity = orderRepository.findByIdAndStatus(order_id, OrderStatus.HANDLING);
         if (orderEntity == null)
             throw new ServiceException("Order is terminal.", HttpStatus.BAD_REQUEST);
         if (orderEntity.getDeliver() == null)

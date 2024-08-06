@@ -4,9 +4,8 @@ import com.ron.FoodDelivery.entities.request_role_account.dto.RequestCreateReque
 import com.ron.FoodDelivery.entities.user.UserEntity;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface ICreateRequestRoleAccountService<UpdateDto> {
+public interface ICreateRequestRoleAccountService<Entity,UpdateDto> {
     void set_enable_account(Long id,Boolean enable);
     void init_account(UserEntity user, RequestCreateRequestRoleAccDataDto requestCreateRequestRoleAccDataDto);
-    void update_information(String username,UpdateDto dto );
-    String update_avatar(String username, MultipartFile image);
+    Entity update_information(String username,UpdateDto dto );
 }

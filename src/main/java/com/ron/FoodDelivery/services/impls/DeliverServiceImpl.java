@@ -46,31 +46,15 @@ public class DeliverServiceImpl implements DeliverService {
 
     @Transactional
     @Override
-    public void update_information(String username, RequestUpdateInformationDeliverDto requestUpdateInformationDeliverDto) {
+    public DeliverEntity update_information(String username, RequestUpdateInformationDeliverDto requestUpdateInformationDeliverDto) {
         DeliverEntity deliver = deliverRepository.findByUsername(username,true);
         if (deliver == null) throw new ServiceException("Deliver not found!", HttpStatus.NOT_FOUND);
         deliver.setPhone_number(requestUpdateInformationDeliverDto.phone_number());
         deliver.setEmail(requestUpdateInformationDeliverDto.email());
         deliver.setName(requestUpdateInformationDeliverDto.name());
         entityManager.merge(deliver);
+        return deliver;
     }
-    @Transactional
-    @Override
-    public String update_avatar(String username, MultipartFile image) {
-        DeliverEntity deliver = deliverRepository.findByUsername(username,true);
-        if (deliver == null) throw new ServiceException("Deliver not found!", HttpStatus.NOT_FOUND);
-        String urlOld = deliver.getAvatar();
-        String url = awsS3Service.upload(image, AwsConfiguration.AVATAR_FOLDER);
-        deliver.setAvatar(url);
-        entityManager.merge(deliver);
-        if (regexValid.isAwsS3Url(urlOld)){
-            executorService.submit(() -> {
-                awsS3Service.delete(urlOld,AwsConfiguration.AVATAR_FOLDER);
-            });
-        }
-        return url;
-    }
-
 
     @Override
     public void init_account(UserEntity user, RequestCreateRequestRoleAccDataDto requestCreateRequestRoleAccDataDto) {

@@ -27,15 +27,4 @@ public class DeliverController {
         deliverService.update_information(authentication.getName(), requestUpdateInformationDeliverDto);
         return ResponseEntity.ok(new ResponseLayout<>(null, "Updated!", true));
     }
-
-    @PostMapping("/update-avatar")
-    @PreAuthorize(PreAuthUtil.hasDELIVER)
-    public ResponseEntity<ResponseLayout<String>> updateAvatar(@NotNull @RequestParam("file") MultipartFile file) {
-        Authentication authentication = SecurityUtil.authentication();
-        log.info(file,"Log at func update_avatar");
-        return ResponseEntity.ok(new ResponseLayout<>(
-                deliverService.update_avatar(authentication.getName(), file),
-                "Updated!",
-                true));
-    }
 }

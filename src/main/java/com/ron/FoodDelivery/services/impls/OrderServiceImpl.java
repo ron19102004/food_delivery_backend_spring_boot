@@ -7,6 +7,7 @@ import com.ron.FoodDelivery.entities.order.OrderEntity;
 import com.ron.FoodDelivery.entities.order.OrderStatus;
 import com.ron.FoodDelivery.entities.order.dto.RequestCancelOrderDto;
 import com.ron.FoodDelivery.entities.order.dto.RequestCreateOrderDto;
+import com.ron.FoodDelivery.entities.order.dto.ResponseAllOrderSellerDto;
 import com.ron.FoodDelivery.entities.order.dto.ResponseInfoOrderDto;
 import com.ron.FoodDelivery.entities.process.ProcessEntity;
 import com.ron.FoodDelivery.entities.process.ProcessStatus;
@@ -73,8 +74,8 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         double total = dto.quantity() * food.getSale_price();
         VoucherEntity voucher = null;
-        if (dto.code() != null) {
-            voucher = voucherRepository.findByCodeAndHidden(dto.code(), false);
+        if (dto.code_voucher() != null) {
+            voucher = voucherRepository.findByCodeAndHidden(dto.code_voucher(), false);
             if (voucher == null)
                 throw new EntityNotFoundException("Voucher invalid!");
             if (voucher.getExpired_at().before(new Date()))
@@ -97,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
                 .longitude_receive(dto.longitude_receive())
                 .latitude_send(food.getSeller().getLatitude())
                 .longitude_send(food.getSeller().getLongitude())
-                .status(OrderStatus.HANDING)
+                .status(OrderStatus.HANDLING)
                 .total(total)
                 .code_order(code_order)
                 .build();
@@ -117,7 +118,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public OrderEntity updateDeliver(Long orderId, String usernameDeliver) {
-        OrderEntity order = orderRepository.findByIdAndStatus(orderId, OrderStatus.HANDING);
+        OrderEntity order = orderRepository.findByIdAndStatus(orderId, OrderStatus.HANDLING);
         if (order == null)
             throw new EntityNotFoundException("Order not found");
         DeliverEntity deliver = deliverRepository.findByUsername(usernameDeliver, true);
@@ -161,5 +162,13 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.CANCELED);
         order.setReason_cancel(requestCancelOrderDto.reason_cancel());
         entityManager.merge(order);
+    }
+
+    @Override
+    public ResponseAllOrderSellerDto getOrdersBySellerUsername(String username) {
+        List<OrderEntity> handling = orderRepository.findAllBySellerUsernameWithStatus(OrderStatus.HANDLING,username);
+        List<OrderEntity> canceled = orderRepository.findAllBySellerUsernameWithStatus(OrderStatus.CANCELED,username);
+        List<OrderEntity> finished = orderRepository.findAllBySellerUsernameWithStatus(OrderStatus.FINISHED,username);
+        return new ResponseAllOrderSellerDto(handling,canceled,finished);
     }
 }

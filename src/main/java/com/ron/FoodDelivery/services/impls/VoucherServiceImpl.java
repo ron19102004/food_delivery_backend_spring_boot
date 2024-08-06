@@ -58,7 +58,7 @@ public class VoucherServiceImpl implements VoucherService {
                 .category(category)
                 .seller(seller)
                 .quantity_current(dto.quantity())
-                .code(dto.name() + "$" + System.currentTimeMillis())
+                .code(dto.code() + "$" + System.currentTimeMillis())
                 .of_system(isSystem)
                 .build();
     }
@@ -108,9 +108,9 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public List<VoucherEntity> findAllBySellerId(Long sellerId) {
-        SellerEntity seller = sellerRepository.findByIdAndEnabled(sellerId, true);
+    public List<VoucherEntity> findAllBySellerUsername(String seller_username) {
+        SellerEntity seller = sellerRepository.findByUsernameAndEnabled(seller_username, true);
         if (seller == null) throw new EntityNotFoundException("Seller not found");
-        return voucherRepository.findAllBySellerId(sellerId,false);
+        return voucherRepository.findAllBySellerUsername(seller_username,false);
     }
 }

@@ -16,6 +16,7 @@ import com.ron.FoodDelivery.repositories.CommentRepository;
 import com.ron.FoodDelivery.repositories.FoodRepository;
 import com.ron.FoodDelivery.repositories.SellerRepository;
 import com.ron.FoodDelivery.services.FoodService;
+import com.ron.FoodDelivery.utils.ImageUrlDriveUtil;
 import com.ron.FoodDelivery.utils.RegexValid;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -74,7 +75,7 @@ public class FoodServiceImpl implements FoodService {
                 .description(dto.description())
                 .category(category)
                 .seller(seller)
-                .poster(dto.poster_url())
+                .poster(ImageUrlDriveUtil.toUrlCanRead(dto.poster_url()))
                 .sold(0L)
                 .sale_off(0f)
                 .sale_price(dto.price())
@@ -112,10 +113,10 @@ public class FoodServiceImpl implements FoodService {
         food.setDescription(dto.description());
         food.setPrice(dto.price());
         food.setSale_off(dto.sale_off());
-        food.setPoster(dto.poster_url());
+        food.setPoster(ImageUrlDriveUtil.toUrlCanRead(dto.poster_url()));
 
-        Double sale_price = food.getPrice() - (food.getPrice() * (food.getSale_off() / 100));
-        food.setSale_price(sale_price);
+        int sale_price = (int) ((food.getPrice() - (food.getPrice() * (food.getSale_off() / 100))) * 100);
+        food.setSale_price(sale_price / 100.0);
         entityManager.merge(food);
         return food;
     }
@@ -133,9 +134,27 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
+    public Page<FoodEntity> findBySellerUsernameWithPage(String username, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
+        return foodRepository.findAllBySellerUsername(username, false, pageable);
+    }
+
+    @Override
     public ResponseDetailsFoodDto getDetailsFood(Long food_id) {
         FoodEntity food = foodRepository.findByIdAndDeleted(food_id, false);
         List<CommentEntity> comments = commentRepository.findByFoodId(food_id);
         return new ResponseDetailsFoodDto(food, comments);
+    }
+
+    @Transactional
+    @Override
+    public void deleteById(Long id, String usernameSeller) {
+        FoodEntity food = foodRepository.findByIdAndDeleted(id, false);
+        if (food == null)
+            throw new EntityNotFoundException("Food not found");
+        if (!food.getSeller().getUser().getUsername().equals(usernameSeller))
+            throw new ServiceException("Not permission", HttpStatus.FORBIDDEN);
+        food.setDeleted(true);
+        entityManager.merge(food);
     }
 }

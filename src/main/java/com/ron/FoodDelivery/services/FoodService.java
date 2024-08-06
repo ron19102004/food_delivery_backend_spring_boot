@@ -16,6 +16,8 @@ public interface FoodService {
     Page<FoodEntity> findByCategoryIdWithPage(Long category_id, int pageNumber);
 
     Page<FoodEntity> findBySellerIdWithPage(Long sellerId, int pageNumber);
+    Page<FoodEntity> findBySellerUsernameWithPage(String username, int pageNumber);
 
     ResponseDetailsFoodDto getDetailsFood(Long food_id);
+    void deleteById(Long id, String usernameSeller);
 }

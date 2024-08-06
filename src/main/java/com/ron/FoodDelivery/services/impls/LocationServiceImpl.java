@@ -29,7 +29,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void create(RequestCreateLocationDto requestCreateLocationDto) {
+    public LocationEntity create(RequestCreateLocationDto requestCreateLocationDto) {
         LocationEntity location = locationRepository.findByCodeAndDeleted(requestCreateLocationDto.code(), false);
         if (location != null) throw new ServiceException("Location already exist!", HttpStatus.BAD_REQUEST);
         location = LocationEntity.builder()
@@ -37,7 +37,7 @@ public class LocationServiceImpl implements LocationService {
                 .name(requestCreateLocationDto.name())
                 .deleted(false)
                 .build();
-        locationRepository.save(location);
+      return  locationRepository.save(location);
     }
 
     @Transactional
@@ -51,7 +51,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Transactional
     @Override
-    public void update(Long id, RequestUpdateLocationDto requestUpdateLocationDto) {
+    public LocationEntity update(Long id, RequestUpdateLocationDto requestUpdateLocationDto) {
         LocationEntity locationById = locationRepository.findByIdAndDeleted(id, false);
         if (locationById == null) throw new ServiceException("Location not found", HttpStatus.NOT_FOUND);
         LocationEntity locationByCode = locationRepository.findByCodeAndDeleted(requestUpdateLocationDto.code(), false);
@@ -60,5 +60,6 @@ public class LocationServiceImpl implements LocationService {
         locationById.setName(requestUpdateLocationDto.name());
         locationById.setCode(requestUpdateLocationDto.code());
         entityManager.merge(locationById);
+        return locationById;
     }
 }

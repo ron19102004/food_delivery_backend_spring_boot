@@ -16,6 +16,8 @@ public record RequestUpdateInformationSellerDto(
         @NotNull @Pattern(regexp = ApplicationConfiguration.EMAIL_REGEX) String email,
         @NotNull Date open_at,
         @NotNull Date close_at,
-        @NotNull Long location_id
+        @NotNull Long location_id,
+        @NotNull String avatar_url,
+        @NotNull String background_url
 ) {
 }

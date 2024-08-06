@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface LocationService {
     List<LocationEntity> findAll();
-    void create(RequestCreateLocationDto requestCreateLocationDto);
+    LocationEntity create(RequestCreateLocationDto requestCreateLocationDto);
     void remove(Long id);
-    void update(Long id, RequestUpdateLocationDto requestUpdateLocationDto);
+    LocationEntity update(Long id, RequestUpdateLocationDto requestUpdateLocationDto);
 }

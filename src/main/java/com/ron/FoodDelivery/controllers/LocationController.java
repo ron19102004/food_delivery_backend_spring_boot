@@ -26,18 +26,16 @@ public class LocationController {
 
     @PostMapping("/new")
     @PreAuthorize(PreAuthUtil.hasADMIN)
-    public ResponseEntity<ResponseLayout<Object>> createLocation(@RequestBody RequestCreateLocationDto requestCreateLocationDto) {
-        locationService.create(requestCreateLocationDto);
-        return ResponseEntity.ok(new ResponseLayout<>(null, "Created!", true));
+    public ResponseEntity<ResponseLayout<LocationEntity>> createLocation(@RequestBody RequestCreateLocationDto requestCreateLocationDto) {
+        return ResponseEntity.ok(new ResponseLayout<>(locationService.create(requestCreateLocationDto), "Created!", true));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize(PreAuthUtil.hasADMIN)
-    public ResponseEntity<ResponseLayout<Object>> updateLocation(
+    public ResponseEntity<ResponseLayout<LocationEntity>> updateLocation(
             @PathVariable("id") Long id,
-            @RequestBody RequestUpdateLocationDto requestCreateLocationDto) {
-        locationService.update(id, requestCreateLocationDto);
-        return ResponseEntity.ok(new ResponseLayout<>(null, "Updated!", true));
+            @RequestBody RequestUpdateLocationDto requestCreateLocationDto) {;
+        return ResponseEntity.ok(new ResponseLayout<>(locationService.update(id, requestCreateLocationDto), "Updated!", true));
     }
 
     @DeleteMapping("/{id}")

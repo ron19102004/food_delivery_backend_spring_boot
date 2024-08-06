@@ -36,15 +36,15 @@ public class VoucherController {
     }
 
     @PreAuthorize(PreAuthUtil.hasADMIN_SELLER)
-    @PatchMapping("/changeHidden/{voucher_id}")
+    @DeleteMapping("/{voucher_id}")
     public ResponseEntity<ResponseLayout<Object>> changeHidden(@PathVariable("voucher_id") Long voucher_id) {
         Authentication authentication = SecurityUtil.authentication();
         voucherService.changeHidden(authentication.getName(), voucher_id);
         return ResponseEntity.ok(new ResponseLayout<>(null, "Changed!", true));
     }
-    @GetMapping("/{seller_id}")
-    public ResponseEntity<ResponseLayout<List<VoucherEntity>>> getBySellerId(@PathVariable("seller_id") Long seller_id ){
-        List<VoucherEntity> voucherEntities = voucherService.findAllBySellerId(seller_id);
+    @GetMapping("/{seller_username}")
+    public ResponseEntity<ResponseLayout<List<VoucherEntity>>> getBySellerId(@PathVariable("seller_username") String seller_username ){
+        List<VoucherEntity> voucherEntities = voucherService.findAllBySellerUsername(seller_username);
         return ResponseEntity.ok(new ResponseLayout<>(voucherEntities, "Got!", true));
     }
 }

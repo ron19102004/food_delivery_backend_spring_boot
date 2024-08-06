@@ -12,6 +12,7 @@ import com.ron.FoodDelivery.exceptions.ServiceException;
 import com.ron.FoodDelivery.repositories.LocationRepository;
 import com.ron.FoodDelivery.repositories.SellerRepository;
 import com.ron.FoodDelivery.services.SellerService;
+import com.ron.FoodDelivery.utils.ImageUrlDriveUtil;
 import com.ron.FoodDelivery.utils.RegexValid;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -60,7 +61,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Transactional
     @Override
-    public void update_information(String username, RequestUpdateInformationSellerDto requestUpdateInformationSellerDto) {
+    public SellerEntity update_information(String username, RequestUpdateInformationSellerDto requestUpdateInformationSellerDto) {
         SellerEntity seller = sellerRepository.findByUsernameAndEnabled(username,true);
         if (seller == null) throw new ServiceException("Seller not found!", HttpStatus.NOT_FOUND);
         LocationEntity location = locationRepository.findById(requestUpdateInformationSellerDto.location_id()).orElse(null);
@@ -74,24 +75,10 @@ public class SellerServiceImpl implements SellerService {
         seller.setLatitude(requestUpdateInformationSellerDto.latitude());
         seller.setLongitude(requestUpdateInformationSellerDto.longitude());
         seller.setLocation(location);
+        seller.setAvatar(ImageUrlDriveUtil.toUrlCanRead(requestUpdateInformationSellerDto.avatar_url()));
+        seller.setBackground_image(ImageUrlDriveUtil.toUrlCanRead(requestUpdateInformationSellerDto.background_url()));
         entityManager.merge(seller);
-    }
-
-    @Transactional
-    @Override
-    public String update_avatar(String username, MultipartFile image) {
-        SellerEntity seller = sellerRepository.findByUsernameAndEnabled(username,true);
-        if (seller == null) throw new ServiceException("Seller not found!", HttpStatus.NOT_FOUND);
-        String urlOld = seller.getAvatar();
-        String url = awsS3Service.upload(image, AwsConfiguration.AVATAR_FOLDER);
-        seller.setAvatar(url);
-        entityManager.merge(seller);
-        if (regexValid.isAwsS3Url(urlOld)){
-            executorService.submit(() -> {
-                awsS3Service.delete(urlOld,AwsConfiguration.AVATAR_FOLDER);
-            });
-        }
-        return url;
+        return seller;
     }
 
     @Transactional
@@ -100,5 +87,10 @@ public class SellerServiceImpl implements SellerService {
         SellerEntity sellerEntity = sellerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Seller account not found"));
         sellerEntity.setEnabled(enable);
         entityManager.merge(sellerEntity);
+    }
+
+    @Override
+    public SellerEntity findByUsername(String username) {
+        return sellerRepository.findByUsernameAndEnabled(username,true);
     }
 }

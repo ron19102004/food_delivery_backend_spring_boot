@@ -9,6 +9,6 @@ public record RequestCreateOrderDto(
         @NotNull Integer quantity,
         String note,
         @NotNull String address,
-        String code
+        String code_voucher
 ) {
 }
