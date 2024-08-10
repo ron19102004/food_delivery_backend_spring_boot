@@ -47,4 +47,8 @@ public class VoucherController {
         List<VoucherEntity> voucherEntities = voucherService.findAllBySellerUsername(seller_username);
         return ResponseEntity.ok(new ResponseLayout<>(voucherEntities, "Got!", true));
     }
+    @GetMapping("/system/all")
+    public ResponseEntity<ResponseLayout<List<VoucherEntity>>> getOfSystem(){
+        return ResponseEntity.ok(new ResponseLayout<>(voucherService.findAllOfSystem(), "Got!", true));
+    }
 }

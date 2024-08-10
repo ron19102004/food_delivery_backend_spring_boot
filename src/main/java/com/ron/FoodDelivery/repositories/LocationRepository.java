@@ -13,7 +13,7 @@ public interface LocationRepository extends JpaRepository<LocationEntity, Long> 
     @Query("SELECT l FROM LocationEntity l WHERE l.deleted = :deleted  ORDER BY l.id ASC")
     List<LocationEntity> findAllByDeleted(@Param("deleted") Boolean deleted);
 
-    LocationEntity findByCodeAndDeleted(Integer code, Boolean deleted);
+    LocationEntity findByCodeAndDeleted(String code, Boolean deleted);
 
     LocationEntity findByIdAndDeleted(Long id, Boolean deleted);
 }

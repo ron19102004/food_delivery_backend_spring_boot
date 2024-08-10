@@ -10,4 +10,5 @@ public interface VoucherService {
     VoucherEntity createWithSystem(RequestCreateVoucherDto requestCreateVoucherDto);
     void changeHidden(String username,Long voucherId);
     List<VoucherEntity> findAllBySellerUsername(String seller_username);
+    List<VoucherEntity> findAllOfSystem();
 }

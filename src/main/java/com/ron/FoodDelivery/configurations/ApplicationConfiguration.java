@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class ApplicationConfiguration {
-    public final static String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    public final static String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@gmail.com";
     public final static String TEL_REGEX = "^(\\+[0-9]{1,3})?[0-9]{10,}$";
     public final static String AWS_S3_URL_REGEX = "";
     @Autowired

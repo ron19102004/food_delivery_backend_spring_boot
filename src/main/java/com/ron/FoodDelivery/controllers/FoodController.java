@@ -71,6 +71,14 @@ public class FoodController {
         Page<FoodEntity> foodEntityPage = foodService.findBySellerUsernameWithPage(seller_username, pageNumber);
         return ResponseEntity.ok(new ResponseLayout<>(foodEntityPage.getContent(), "Page:" + pageNumber + "/" + foodEntityPage.getTotalPages(), true));
     }
+    @GetMapping("/location/{code}")
+    public ResponseEntity<ResponseLayout<List<FoodEntity>>> getByLocationCode(
+            @PathVariable("code") String code,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int pageNumber
+    ) {
+        Page<FoodEntity> foodEntityPage = foodService.findAllByLocationCode(code, pageNumber);
+        return ResponseEntity.ok(new ResponseLayout<>(foodEntityPage.getContent(), "Page:" + pageNumber + "/" + foodEntityPage.getTotalPages(), true));
+    }
     @PreAuthorize(PreAuthUtil.hasSELLER)
     @DeleteMapping("/{food_id}")
     public ResponseEntity<ResponseLayout<Object>> deleteById(

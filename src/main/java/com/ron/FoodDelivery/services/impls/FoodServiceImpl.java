@@ -140,6 +140,12 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
+    public Page<FoodEntity> findAllByLocationCode(String code, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
+        return foodRepository.findAllByLocationCode(code,pageable);
+    }
+
+    @Override
     public ResponseDetailsFoodDto getDetailsFood(Long food_id) {
         FoodEntity food = foodRepository.findByIdAndDeleted(food_id, false);
         List<CommentEntity> comments = commentRepository.findByFoodId(food_id);

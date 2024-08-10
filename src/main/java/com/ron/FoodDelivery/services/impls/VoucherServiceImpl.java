@@ -113,4 +113,9 @@ public class VoucherServiceImpl implements VoucherService {
         if (seller == null) throw new EntityNotFoundException("Seller not found");
         return voucherRepository.findAllBySellerUsername(seller_username,false);
     }
+
+    @Override
+    public List<VoucherEntity> findAllOfSystem() {
+        return voucherRepository.findAllOfSystem(false);
+    }
 }

@@ -14,4 +14,6 @@ public interface VoucherRepository extends JpaRepository<VoucherEntity, Long> {
     List<VoucherEntity> findAllBySellerUsername(@Param("username") String username, @Param("hidden") Boolean hidden);
     VoucherEntity findByCodeAndHidden(String code,Boolean hidden);
     VoucherEntity findByIdAndHidden(Long id,Boolean hidden );
+    @Query("SELECT v FROM VoucherEntity v WHERE v.of_system = TRUE AND v.hidden = :hidden AND CURRENT_TIMESTAMP < v.expired_at ORDER BY v.id DESC")
+    List<VoucherEntity> findAllOfSystem(@Param("hidden") Boolean hidden);
 }
