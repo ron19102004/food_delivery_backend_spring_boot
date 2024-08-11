@@ -46,15 +46,24 @@ public class FoodController {
         return ResponseEntity.ok(new ResponseLayout<>(food, "Updated!", true));
     }
 
-    @GetMapping("/category/{category_id}")
-    public ResponseEntity<ResponseLayout<List<FoodEntity>>> getByCategoryId(
-            @PathVariable("category_id") Long category_id,
+    @GetMapping("/products")
+    public ResponseEntity<ResponseLayout<List<FoodEntity>>> getFoodsWithQuery(
+            @RequestParam(name = "category_id",required = false) Long category_id,
+            @RequestParam(name = "location_code",required = false) String code,
             @RequestParam(value = "page", required = false, defaultValue = "0") int pageNumber
     ) {
-        Page<FoodEntity> foodEntityPage = foodService.findByCategoryIdWithPage(category_id, pageNumber);
+        Page<FoodEntity> foodEntityPage = null;
+        if (category_id != null && code != null ){
+             foodEntityPage = foodService.findAllCategoryIdByLocationCode(category_id,code,pageNumber);
+        } else if (category_id != null) {
+            foodEntityPage = foodService.findByCategoryIdWithPage(category_id, pageNumber);
+        } else if (code != null) {
+            foodEntityPage = foodService.findAllByLocationCode(code, pageNumber);
+        } else {
+            foodEntityPage = foodService.findAllWithPage(pageNumber);
+        }
         return ResponseEntity.ok(new ResponseLayout<>(foodEntityPage.getContent(), "Page:" + pageNumber + "/" + foodEntityPage.getTotalPages(), true));
     }
-
     @GetMapping("/seller/uid/{seller_id}")
     public ResponseEntity<ResponseLayout<List<FoodEntity>>> getBySellerId(
             @PathVariable("seller_id") Long seller_id,
@@ -69,14 +78,6 @@ public class FoodController {
             @RequestParam(value = "page", required = false, defaultValue = "0") int pageNumber
     ) {
         Page<FoodEntity> foodEntityPage = foodService.findBySellerUsernameWithPage(seller_username, pageNumber);
-        return ResponseEntity.ok(new ResponseLayout<>(foodEntityPage.getContent(), "Page:" + pageNumber + "/" + foodEntityPage.getTotalPages(), true));
-    }
-    @GetMapping("/location/{code}")
-    public ResponseEntity<ResponseLayout<List<FoodEntity>>> getByLocationCode(
-            @PathVariable("code") String code,
-            @RequestParam(value = "page", required = false, defaultValue = "0") int pageNumber
-    ) {
-        Page<FoodEntity> foodEntityPage = foodService.findAllByLocationCode(code, pageNumber);
         return ResponseEntity.ok(new ResponseLayout<>(foodEntityPage.getContent(), "Page:" + pageNumber + "/" + foodEntityPage.getTotalPages(), true));
     }
     @PreAuthorize(PreAuthUtil.hasSELLER)

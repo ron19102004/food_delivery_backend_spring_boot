@@ -18,5 +18,8 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
     @Query("SELECT f FROM FoodEntity f WHERE f.seller.user.username = :username AND f.deleted = :deleted")
     Page<FoodEntity> findAllBySellerUsername(@Param("username") String username, @Param("deleted") Boolean deleted, Pageable pageable);
     @Query("SELECT f FROM FoodEntity f WHERE f.seller.location.code = :code AND f.deleted = FALSE")
+    //for user
     Page<FoodEntity> findAllByLocationCode(@Param("code") String code,Pageable pageable);
+    @Query("SELECT f FROM FoodEntity f WHERE f.category.id = :categoryId AND f.seller.location.code = :code AND f.deleted = FALSE")
+    Page<FoodEntity> findAllByCategoryIdAndLocationCode(@Param("categoryId") Long categoryId,@Param("code") String code,Pageable pageable);
 }

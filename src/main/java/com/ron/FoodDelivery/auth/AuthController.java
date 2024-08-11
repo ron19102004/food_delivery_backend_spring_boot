@@ -60,7 +60,7 @@ public class AuthController {
         ResponseLayout<UserEntity> responseLayout = new ResponseLayout<>(
                 authService.findUserByUsername(authentication.getName()),
                 "Got!",
-                false);
+                true);
         return ResponseEntity.ok(responseLayout);
     }
 }

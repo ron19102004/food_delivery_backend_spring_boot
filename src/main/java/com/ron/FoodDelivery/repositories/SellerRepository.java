@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface SellerRepository extends JpaRepository<SellerEntity, Long> {
     @Query("SELECT s FROM SellerEntity s WHERE s.user.username = :username AND s.enabled = :enabled")
     SellerEntity findByUsernameAndEnabled(@Param("username") String username, @Param("enabled") Boolean enabled);
-
     SellerEntity findByIdAndEnabled(Long id, Boolean enabled);
     @Query("SELECT COUNT(s.id) FROM SellerEntity s WHERE s.enabled = TRUE")
     Long totalsSeller();

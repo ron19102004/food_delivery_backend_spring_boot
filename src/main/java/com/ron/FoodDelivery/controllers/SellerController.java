@@ -39,6 +39,10 @@ public class SellerController {
         Authentication authentication = SecurityUtil.authentication();
         return ResponseEntity.ok(new ResponseLayout<>(sellerService.findByUsername(authentication.getName()), "Got!", true));
     }
+    @GetMapping("/details/{id}")
+    public ResponseEntity<ResponseLayout<SellerEntity>> getMyInfoSeller(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(new ResponseLayout<>(sellerService.findById(id), "Got!", true));
+    }
     @GetMapping("/orders")
     @PreAuthorize(PreAuthUtil.hasSELLER)
     public ResponseEntity<ResponseLayout<ResponseAllOrderSellerDto>> getOrders() {

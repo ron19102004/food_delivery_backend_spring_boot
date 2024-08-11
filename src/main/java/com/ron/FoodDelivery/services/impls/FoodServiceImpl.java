@@ -128,6 +128,12 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
+    public Page<FoodEntity> findAllWithPage(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
+        return foodRepository.findAll(pageable);
+    }
+
+    @Override
     public Page<FoodEntity> findBySellerIdWithPage(Long sellerId, int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
         return foodRepository.findAllBySellerId(sellerId, false, pageable);
@@ -143,6 +149,12 @@ public class FoodServiceImpl implements FoodService {
     public Page<FoodEntity> findAllByLocationCode(String code, int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
         return foodRepository.findAllByLocationCode(code,pageable);
+    }
+
+    @Override
+    public Page<FoodEntity> findAllCategoryIdByLocationCode(Long category_id, String code, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
+        return foodRepository.findAllByCategoryIdAndLocationCode(category_id,code,pageable);
     }
 
     @Override

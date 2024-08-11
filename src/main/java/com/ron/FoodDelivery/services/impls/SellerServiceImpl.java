@@ -90,6 +90,11 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
+    public SellerEntity findById(Long id) {
+        return sellerRepository.findByIdAndEnabled(id,true);
+    }
+
+    @Override
     public SellerEntity findByUsername(String username) {
         return sellerRepository.findByUsernameAndEnabled(username,true);
     }

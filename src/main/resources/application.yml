@@ -24,9 +24,9 @@ spring:
     name: Food-Delivery
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/food_delivery_app
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://fooddelivery-ron19102004-0d8a.k.aivencloud.com:21634/defaultdb
+    username: avnadmin
+    password: AVNS_vkJBZmk6MPZMChTZiY3
   jpa:
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
