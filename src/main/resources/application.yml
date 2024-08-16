@@ -26,7 +26,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://fooddelivery-ron19102004-0d8a.k.aivencloud.com:21634/defaultdb
     username: avnadmin
-    password: AVNS_vkJBZmk6MPZMChTZiY3
+    password:
   jpa:
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
