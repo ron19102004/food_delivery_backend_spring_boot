@@ -171,4 +171,9 @@ public class OrderServiceImpl implements OrderService {
         List<OrderEntity> finished = orderRepository.findAllBySellerUsernameWithStatus(OrderStatus.FINISHED,username);
         return new ResponseAllOrderSellerDto(handling,canceled,finished);
     }
+
+    @Override
+    public List<OrderEntity> userOrdersByUsername(String username) {
+        return orderRepository.findAllMyOrderByUsername(username);
+    }
 }

@@ -64,7 +64,6 @@ public class OrderEntity extends EntityBase {
     @ManyToOne
     @JoinColumn(name = "food_id", referencedColumnName = "id", nullable = false)
     private FoodEntity food;
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "order",orphanRemoval = true)
     private List<ProcessEntity> processEntities;
     @OneToOne(fetch = FetchType.LAZY,mappedBy = "order")

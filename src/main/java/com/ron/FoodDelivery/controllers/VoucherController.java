@@ -42,9 +42,14 @@ public class VoucherController {
         voucherService.changeHidden(authentication.getName(), voucher_id);
         return ResponseEntity.ok(new ResponseLayout<>(null, "Changed!", true));
     }
-    @GetMapping("/{seller_username}")
-    public ResponseEntity<ResponseLayout<List<VoucherEntity>>> getBySellerId(@PathVariable("seller_username") String seller_username ){
+    @GetMapping("/seller-username/{seller_username}")
+    public ResponseEntity<ResponseLayout<List<VoucherEntity>>> getBySellerUsername(@PathVariable("seller_username") String seller_username ){
         List<VoucherEntity> voucherEntities = voucherService.findAllBySellerUsername(seller_username);
+        return ResponseEntity.ok(new ResponseLayout<>(voucherEntities, "Got!", true));
+    }
+    @GetMapping("/seller-id/{id}")
+    public ResponseEntity<ResponseLayout<List<VoucherEntity>>> getBySellerId(@PathVariable("id") Long id ){
+        List<VoucherEntity> voucherEntities = voucherService.findAllBySellerId(id);
         return ResponseEntity.ok(new ResponseLayout<>(voucherEntities, "Got!", true));
     }
     @GetMapping("/system/all")

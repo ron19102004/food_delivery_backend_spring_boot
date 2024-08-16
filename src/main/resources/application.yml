@@ -41,8 +41,8 @@ cloud:
   endpointUrl: https://s3.ap-southeast-2.amazonaws.com
   aws:
     credentials:
-      access-key: AKIAQ3EGWTN6FUXUZMWV
-      secret-key: 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
+      access-key:
+      secret-key:
     region:
       static: ap-southeast-2
     stack:

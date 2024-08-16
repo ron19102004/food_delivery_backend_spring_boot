@@ -19,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/foods/orders")
 public class OrderController {
@@ -51,7 +53,12 @@ public class OrderController {
         Authentication authentication = SecurityUtil.authentication();
         return ResponseEntity.ok(new ResponseLayout<>(orderService.getInfoOrder(order_id, authentication.getName()), "Got!", true));
     }
-
+    @PreAuthorize(PreAuthUtil.hasUSER)
+    @GetMapping("/my")
+    public ResponseEntity<ResponseLayout<List<OrderEntity>>> getMyOrders() {
+        Authentication authentication = SecurityUtil.authentication();
+        return ResponseEntity.ok(new ResponseLayout<>(orderService.userOrdersByUsername(authentication.getName()), "Got!", true));
+    }
     @PreAuthorize(PreAuthUtil.hasDELIVER)
     @PatchMapping("/update-deliver/{order_id}")
     public ResponseEntity<ResponseLayout<OrderEntity>> updateDeliver(@PathVariable("order_id") Long order_id) {

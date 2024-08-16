@@ -11,4 +11,5 @@ public interface VoucherService {
     void changeHidden(String username,Long voucherId);
     List<VoucherEntity> findAllBySellerUsername(String seller_username);
     List<VoucherEntity> findAllOfSystem();
+    List<VoucherEntity> findAllBySellerId(Long id);
 }

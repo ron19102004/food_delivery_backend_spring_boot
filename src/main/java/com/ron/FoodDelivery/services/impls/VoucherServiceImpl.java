@@ -118,4 +118,11 @@ public class VoucherServiceImpl implements VoucherService {
     public List<VoucherEntity> findAllOfSystem() {
         return voucherRepository.findAllOfSystem(false);
     }
+
+    @Override
+    public List<VoucherEntity> findAllBySellerId(Long id) {
+        SellerEntity seller = sellerRepository.findByIdAndEnabled(id, true);
+        if (seller == null) throw new EntityNotFoundException("Seller not found");
+        return voucherRepository.findAllBySellerId(id,false);
+    }
 }

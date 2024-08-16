@@ -7,6 +7,8 @@ import com.ron.FoodDelivery.entities.order.dto.ResponseAllOrderSellerDto;
 import com.ron.FoodDelivery.entities.order.dto.ResponseInfoOrderDto;
 import com.ron.FoodDelivery.entities.process.ProcessEntity;
 
+import java.util.List;
+
 public interface OrderService {
     OrderEntity create(Long foodId,
                        String username,
@@ -16,4 +18,5 @@ public interface OrderService {
     ResponseInfoOrderDto getInfoOrder(Long order_id,String username);
     void cancelOrder(String username, RequestCancelOrderDto requestCancelOrderDto);
     ResponseAllOrderSellerDto getOrdersBySellerUsername(String username);
+    List<OrderEntity> userOrdersByUsername(String username);
 }
