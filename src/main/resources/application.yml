@@ -27,6 +27,9 @@ spring:
     url: jdbc:postgresql://fooddelivery-ron19102004-0d8a.k.aivencloud.com:21634/defaultdb
     username: avnadmin
     password:
+#    url: jdbc:postgresql://localhost:5432/food_delivery_app
+#    username: postgres
+#    password: postgres
   jpa:
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect

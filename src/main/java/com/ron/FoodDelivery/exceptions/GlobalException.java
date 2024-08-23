@@ -16,6 +16,7 @@ public class GlobalException {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseLayout<Object>> exceptionHandle(Exception exception) {
+        exception.printStackTrace();
         log.err(exception);
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                 .body(new ResponseLayout<>(exception.getMessage(), exception.getMessage(), false));

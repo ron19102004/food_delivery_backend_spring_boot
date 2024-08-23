@@ -1,11 +1,9 @@
 package com.ron.FoodDelivery.jwt;
 
 import com.ron.FoodDelivery.entities.token.TokenEntity;
-import com.ron.FoodDelivery.entities.token.UserAgent;
 import com.ron.FoodDelivery.exceptions.ServiceException;
 import com.ron.FoodDelivery.services.TokenService;
 //import com.ron.FoodDelivery.utils.LogUtil;
-import com.ron.FoodDelivery.utils.ConsoleUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,7 +1,9 @@
 package com.ron.FoodDelivery;
 
 import com.ron.FoodDelivery.auth.dto.RequestRegisterDto;
+import com.ron.FoodDelivery.entities.token.TokenEntity;
 import com.ron.FoodDelivery.entities.user.UserRole;
+import com.ron.FoodDelivery.repositories.TokenRepository;
 import com.ron.FoodDelivery.services.UserService;
 import com.ron.FoodDelivery.utils.ConsoleUtil;
 import jakarta.annotation.PostConstruct;
@@ -17,6 +19,8 @@ public class FoodDeliveryApplication {
     private int PORT;
     @Autowired
     private UserService userService;
+    @Autowired
+    private TokenRepository tokenRepository;
 
     @PostConstruct
     private void initialize() {

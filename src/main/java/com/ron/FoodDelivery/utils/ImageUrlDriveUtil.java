@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class ImageUrlDriveUtil {
     private static final String URL_PATTERN = "https:\\/\\/drive\\.google\\.com\\/file\\/d\\/[^\\/]+\\/view\\?usp=(drive_link|sharing)";
-    private static final String URL_IMG_PATTERN = "https?:\\/\\/.*\\.(png|jpg)";
+    private static final String URL_IMG_PATTERN = "https?:\\/\\/.*\\.(png|jpg|jpeg|gif)";
     private static final String URL_IMG_DECODED = "https:\\/\\/drive\\.google\\.com\\/thumbnail\\?id=([a-zA-Z0-9_-]+)&sz=w1000";
 
     public static String toUrlCanRead(String url) {

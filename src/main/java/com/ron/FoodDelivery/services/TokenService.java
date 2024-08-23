@@ -6,6 +6,7 @@ import com.ron.FoodDelivery.entities.user.UserEntity;
 
 public interface TokenService {
     void saveToken(UserEntity user, String token, UserAgent userAgent);
+    void checkTokenByUser(UserEntity user);
     void deleteByToken(String token);
     TokenEntity findByToken(String token);
 }

@@ -1,6 +1,7 @@
 package com.ron.FoodDelivery.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -38,8 +39,13 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public boolean isTokenValid(String token) {
-        Date expiration = extractClaims(token, Claims::getExpiration);
-        return !expiration.before(new Date());
+        try {
+            Date expiration = extractClaims(token, Claims::getExpiration);
+            return !expiration.before(new Date());
+        } catch (ExpiredJwtException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -70,6 +76,6 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public Date getExpired(String token) {
-        return extractClaims(token,Claims::getExpiration);
+        return extractClaims(token, Claims::getExpiration);
     }
 }

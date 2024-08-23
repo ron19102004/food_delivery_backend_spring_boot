@@ -22,6 +22,7 @@ public class TokenEntity extends EntityBase {
     private Date expired_at;
     //relationships
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserEntity user;
 }
