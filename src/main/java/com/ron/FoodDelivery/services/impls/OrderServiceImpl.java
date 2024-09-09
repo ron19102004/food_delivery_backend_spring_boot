@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         double total = dto.quantity() * food.getSale_price();
         VoucherEntity voucher = null;
-        if (dto.code_voucher() != null) {
+        if (dto.code_voucher() != null && !dto.code_voucher().isEmpty()) {
             voucher = voucherRepository.findByCodeAndHidden(dto.code_voucher(), false);
             if (voucher == null)
                 throw new EntityNotFoundException("Voucher invalid!");
