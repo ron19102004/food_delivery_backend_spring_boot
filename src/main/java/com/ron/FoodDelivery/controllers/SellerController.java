@@ -49,4 +49,11 @@ public class SellerController {
         Authentication authentication = SecurityUtil.authentication();
         return ResponseEntity.ok(new ResponseLayout<>(orderService.getOrdersBySellerUsername(authentication.getName()), "Got!!", true));
     }
+    @PatchMapping("/updateLatLon/{lat}/{lon}")
+    @PreAuthorize(PreAuthUtil.hasSELLER)
+    public  ResponseEntity<ResponseLayout<Object>> updateLatLon(@PathVariable("lat") double lat,@PathVariable("lon") double lon){
+        Authentication authentication = SecurityUtil.authentication();
+        sellerService.updateLatLon(authentication.getName(),lat,lon);
+        return ResponseEntity.ok(new ResponseLayout<>(null, "Updated!", true));
+    }
 }

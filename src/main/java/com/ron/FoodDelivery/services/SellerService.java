@@ -7,4 +7,5 @@ import com.ron.FoodDelivery.services.interfaces.futures.ICreateRequestRoleAccoun
 public interface SellerService extends ICreateRequestRoleAccountService<SellerEntity, RequestUpdateInformationSellerDto> {
     SellerEntity findByUsername(String username);
     SellerEntity findById(Long id);
+    void updateLatLon(String username,double lat, double lon);
 }

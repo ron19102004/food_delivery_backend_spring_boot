@@ -78,6 +78,8 @@ public class OrderServiceImpl implements OrderService {
             voucher = voucherRepository.findByCodeAndHidden(dto.code_voucher(), false);
             if (voucher == null)
                 throw new EntityNotFoundException("Voucher invalid!");
+            if(!Objects.equals(voucher.getCategory().getId(), food.getCategory().getId()))
+                throw new ServiceException("Voucher invalid!",HttpStatus.BAD_REQUEST);
             if (voucher.getExpired_at().before(new Date()))
                 throw new ServiceException("Voucher is expired", HttpStatus.BAD_REQUEST);
             if (voucher.getQuantity_current() == 0)
@@ -174,6 +176,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderEntity> userOrdersByUsername(String username) {
-        return orderRepository.findAllMyOrderByUsername(username);
+        return orderRepository.findAllMyOrderByUsername(username,OrderStatus.HANDLING);
+    }
+
+    @Override
+    public List<OrderEntity> getOrdersForDeliver(String location_code) {
+        return orderRepository.findAllMyOrderByLocationCode(location_code,OrderStatus.HANDLING);
     }
 }

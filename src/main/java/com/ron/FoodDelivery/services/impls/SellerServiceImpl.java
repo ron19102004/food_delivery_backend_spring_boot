@@ -93,6 +93,15 @@ public class SellerServiceImpl implements SellerService {
     public SellerEntity findById(Long id) {
         return sellerRepository.findByIdAndEnabled(id,true);
     }
+    @Transactional
+    @Override
+    public void updateLatLon(String username, double lat, double lon) {
+        SellerEntity seller = findByUsername(username);
+        if (seller == null) throw new ServiceException("Seller not found!", HttpStatus.NOT_FOUND);
+        seller.setLatitude(lat);
+        seller.setLongitude(lon);
+        entityManager.merge(seller);
+    }
 
     @Override
     public SellerEntity findByUsername(String username) {

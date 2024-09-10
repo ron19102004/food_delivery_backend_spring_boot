@@ -82,4 +82,11 @@ public class OrderController {
         orderService.cancelOrder(authentication.getName(), requestCancelOrderDto);
         return ResponseEntity.ok(new ResponseLayout<>(null, "Canceled!", true));
     }
+    @PreAuthorize(PreAuthUtil.hasDELIVER)
+    @GetMapping("/deliver/getAll/{location_code}")
+    public  ResponseEntity<ResponseLayout<List<OrderEntity>>> getAllOrderForDeliver(@PathVariable("location_code") String location_code){
+        List<OrderEntity> list = orderService.getOrdersForDeliver(location_code);
+        return ResponseEntity.ok(new ResponseLayout<>(list, "Got!", true));
+    }
+
 }

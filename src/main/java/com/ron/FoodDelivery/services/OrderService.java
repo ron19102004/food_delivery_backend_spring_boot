@@ -19,4 +19,5 @@ public interface OrderService {
     void cancelOrder(String username, RequestCancelOrderDto requestCancelOrderDto);
     ResponseAllOrderSellerDto getOrdersBySellerUsername(String username);
     List<OrderEntity> userOrdersByUsername(String username);
+    List<OrderEntity> getOrdersForDeliver(String location_code);
 }
